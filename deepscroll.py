@@ -22,7 +22,7 @@ TR = {
         "upload": "📁 Upload PDF",
         "classics": "📚 Classics",
         "load": "📖 Load",
-        "reading": "📚 Reading the book...",
+        "reading": "📚 Reading...",
         "building": "🧠 Building idea chain...",
         "next_ch": "Next Chapter →",
         "done": "🎉 Done!",
@@ -54,7 +54,7 @@ TR = {
         "upload": "📁 PDF",
         "classics": "📚 Класика",
         "load": "📖 Читати",
-        "reading": "📚 Читаю книгу...",
+        "reading": "📚 Читаю...",
         "building": "🧠 Будую ланцюг ідей...",
         "next_ch": "Далі →",
         "done": "🎉 Готово!",
@@ -96,7 +96,7 @@ def t(key):
 st.set_page_config(page_title="DeepScroll", page_icon="🧠", layout="centered")
 
 # ═══════════════════════════════════════════════════════
-#  STYLES (no JS, only CSS)
+#  STYLES
 # ═══════════════════════════════════════════════════════
 
 st.markdown("""
@@ -110,7 +110,6 @@ st.markdown("""
     #MainMenu, header, footer, .stDeployButton { display: none !important; }
     .block-container { padding-top: 1rem !important; max-width: 480px !important; }
 
-    /* ── HERO CARD ── */
     .hero {
         position: relative;
         border-radius: 22px;
@@ -174,10 +173,30 @@ st.markdown("""
         to   { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    .conn { text-align: center; color: #e94560; font-size: 22px; margin: 3px 0; opacity: 0.4; }
-    .ch-t { color: #e94560; font-size: 1.6em; font-weight: 700; text-align: center; margin: 12px 0 3px; }
-    .ch-s { color: #444; text-align: center; font-size: 0.8em; margin-bottom: 18px; }
-    .land { text-align: center; padding: 70px 20px; }
+    .conn {
+        text-align: center;
+        color: #e94560;
+        font-size: 22px;
+        margin: 3px 0;
+        opacity: 0.4;
+    }
+    .ch-t {
+        color: #e94560;
+        font-size: 1.6em;
+        font-weight: 700;
+        text-align: center;
+        margin: 12px 0 3px;
+    }
+    .ch-s {
+        color: #444;
+        text-align: center;
+        font-size: 0.8em;
+        margin-bottom: 18px;
+    }
+    .land {
+        text-align: center;
+        padding: 70px 20px;
+    }
     .land h2 { color: #ccc; font-weight: 700; }
     .land p { color: #555; }
 </style>
@@ -201,32 +220,22 @@ client = get_groq()
 
 
 # ═══════════════════════════════════════════════════════
-#  MUSIC — Using st.audio with direct working URLs
+#  MUSIC — SoundHelix (free, always works, no CORS)
 # ═══════════════════════════════════════════════════════
 
 MUSIC_URLS = {
-    "dark": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
-    "epic": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-    "calm": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-    "mysterious": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3",
-    "hopeful": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
-    "intense": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+    "dark":        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
+    "epic":        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+    "calm":        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+    "mysterious":  "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3",
+    "hopeful":     "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
+    "intense":     "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
     "melancholic": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
 }
 
 
-@st.cache_data(ttl=3600)
-    """Download music file and return bytes for st.audio()."""
-    try:
-        r = requests.get(url, timeout=20)
-        r.raise_for_status()
-        return r.content
-    except Exception:
-        return None
-
-
 # ═══════════════════════════════════════════════════════
-#  IMAGES — picsum.photos (instant)
+#  IMAGES — picsum.photos (instant, always works)
 # ═══════════════════════════════════════════════════════
 
 def get_image_url(prompt, idx=0):
@@ -235,70 +244,50 @@ def get_image_url(prompt, idx=0):
 
 
 # ═══════════════════════════════════════════════════════
-#  PDF EXTRACTION (robust)
+#  PDF EXTRACTION
 # ═══════════════════════════════════════════════════════
 
 def extract_pdf(pdf_bytes):
-    """Extract text from PDF with multiple fallback methods."""
     try:
         doc = fitz.open(stream=pdf_bytes, filetype="pdf")
         text = ""
-
         for page_num in range(len(doc)):
             page = doc[page_num]
-
-            # Method 1: Standard text extraction
             page_text = page.get_text("text")
-
-            # Method 2: If empty, try different extraction
             if not page_text or len(page_text.strip()) < 10:
-                page_text = page.get_text("blocks")
-                if isinstance(page_text, list):
+                blocks = page.get_text("blocks")
+                if isinstance(blocks, list):
                     page_text = "\n".join(
-                        block[4] for block in page_text
-                        if isinstance(block, tuple) and len(block) > 4 and isinstance(block[4], str)
+                        b[4] for b in blocks
+                        if isinstance(b, tuple) and len(b) > 4
+                        and isinstance(b[4], str)
                     )
-
             if isinstance(page_text, str) and page_text.strip():
                 text += page_text + "\n\n"
-
         doc.close()
-
-        # Clean up
-        text = re.sub(r'\n{3,}', '\n\n', text)
-        text = text.strip()
-
-        if len(text) < 50:
-            return ""
-
-        return text
-
+        text = re.sub(r'\n{3,}', '\n\n', text).strip()
+        return text if len(text) > 50 else ""
     except Exception as e:
-        st.error(f"❌ Could not read this PDF: {e}")
+        st.error(f"❌ Could not read PDF: {e}")
         return ""
 
 
 def split_chapters(text):
-    """Split text into chapters with smart detection."""
     if not text or len(text) < 100:
-        return ["Text too short to process."]
+        return ["Text too short."]
 
-    # Strategy 1: Chapter markers
     for pattern in [
         r'(?=\n\s*(?:CHAPTER|Chapter)\s+[\dIVXLCDM]+)',
         r'(?=\n\s*(?:PART|Part)\s+[\dIVXLCDM]+)',
-        r'(?=\n\s*\d+\.\s+[A-Z])',
     ]:
         parts = re.split(pattern, text)
         parts = [p.strip() for p in parts if p.strip() and len(p.strip()) > 200]
         if len(parts) >= 2:
-            return parts[:50]  # Max 50 chapters
+            return parts[:50]
 
-    # Strategy 2: Natural paragraph breaks
     paras = re.split(r'\n\s*\n', text)
     if len(paras) >= 4:
-        chunks = []
-        current = ""
+        chunks, current = [], ""
         for p in paras:
             p = p.strip()
             if not p:
@@ -308,34 +297,32 @@ def split_chapters(text):
                 current = p
             else:
                 current += "\n\n" + p
-        if current.strip() and len(current.strip()) > 100:
+        if current.strip():
             chunks.append(current.strip())
         if len(chunks) >= 2:
             return chunks[:50]
 
-    # Strategy 3: Sentence-aware fixed chunks
     sentences = re.split(r'(?<=[.!?])\s+', text)
-    chunks = []
-    current = ""
+    chunks, current = [], ""
     for s in sentences:
         if len(current) + len(s) > 2500 and len(current) > 500:
             chunks.append(current.strip())
             current = s
         else:
             current += " " + s
-    if current.strip() and len(current.strip()) > 100:
+    if current.strip():
         chunks.append(current.strip())
 
     return chunks[:50] if chunks else [text[:3000]]
 
 
 # ═══════════════════════════════════════════════════════
-#  AI FUNCTIONS
+#  AI
 # ═══════════════════════════════════════════════════════
 
 def make_chain(chapter_text):
     if not client:
-        return [{"idea": "No AI connected.", "visual": "abstract", "mood": "calm"}]
+        return [{"idea": "No AI.", "visual": "abstract", "mood": "calm"}]
 
     ai_lang = t("ai")
 
@@ -346,29 +333,25 @@ def make_chain(chapter_text):
                     "role": "system",
                     "content": f"""You create IDEA CHAINS for people with ADHD.
 
-CRITICAL RULES:
-- Each idea: MAX 10-15 WORDS total. Like a billboard.
-- NO long sentences. NO filler words. NO "the author says" or "this chapter discusses"
-- Just raw insight. Punchy. Bold.
+RULES:
+- Each idea: MAX 12 WORDS. Like a billboard. Like a meme.
+- NO filler. NO "the author says". Just raw insight.
 - Ideas connect: cause→effect or question→answer
 - Generate exactly 5 ideas
-- visual: 2-3 English words for a photo (landscape, nature, abstract — NO text, NO people faces)
+- visual: 2-3 English words for a nature/landscape photo
 - mood: one of: dark, epic, calm, mysterious, hopeful, intense, melancholic
 - {ai_lang}
 
-Return ONLY a JSON array. No markdown. No explanation.
+Return ONLY JSON array. No markdown. No explanation.
 [{{"idea":"short text","visual":"photo keywords","mood":"calm"}}]
 
-GOOD examples:
-- "Fear keeps us in cages we built ourselves."
-- "Power doesn't corrupt. It reveals."
-- "The cave was comfortable. Truth wasn't."
-- "Every empire falls. The pattern never breaks."
-BAD examples (too long):
-- "The author discusses how fear is a mechanism that keeps people trapped" ← NO
-- "In this chapter we learn about the nature of power" ← NO"""
+GOOD: "Power doesn't corrupt. It reveals."
+BAD: "The author discusses how power is a mechanism that corrupts people over time" """
                 },
-                {"role": "user", "content": f"Create an idea chain from this text:\n\n{chapter_text[:3000]}"}
+                {
+                    "role": "user",
+                    "content": f"Create idea chain:\n\n{chapter_text[:3000]}"
+                }
             ],
             model=AI_MODEL,
             temperature=0.7,
@@ -377,7 +360,7 @@ BAD examples (too long):
         return parse_json(r.choices[0].message.content.strip())
     except Exception as e:
         st.warning(f"⚠️ AI error: {e}")
-        return [{"idea": "Could not generate. Refresh the page.", "visual": "abstract", "mood": "calm"}]
+        return [{"idea": "Could not generate. Refresh.", "visual": "abstract", "mood": "calm"}]
 
 
 def make_title(chapter_text):
@@ -388,27 +371,21 @@ def make_title(chapter_text):
         r = client.chat.completions.create(
             messages=[{
                 "role": "user",
-                "content": (
-                    f"Create a poetic title (2-4 words) for this text. "
-                    f"{ai_lang} Return ONLY the title, nothing else:\n\n"
-                    f"{chapter_text[:1500]}"
-                )
+                "content": f"Poetic title, 2-4 words. {ai_lang} Return ONLY the title:\n\n{chapter_text[:1500]}"
             }],
             model=AI_MODEL,
             temperature=0.9,
             max_tokens=20,
         )
-        return r.choices[0].message.content.strip().strip('"\'').strip()[:50]
+        return r.choices[0].message.content.strip().strip('"\'')[:50]
     except Exception:
         return "..."
 
 
 def parse_json(raw):
-    # Clean markdown
     cleaned = re.sub(r'```json\s*', '', raw)
     cleaned = re.sub(r'```\s*', '', cleaned).strip()
 
-    # Try 1: Direct
     try:
         result = json.loads(cleaned)
         if isinstance(result, list):
@@ -416,7 +393,6 @@ def parse_json(raw):
     except json.JSONDecodeError:
         pass
 
-    # Try 2: Find array
     match = re.search(r'\[.*\]', cleaned, re.DOTALL)
     if match:
         try:
@@ -426,7 +402,6 @@ def parse_json(raw):
         except json.JSONDecodeError:
             pass
 
-    # Try 3: Individual objects
     objs = []
     for o in re.findall(r'\{[^{}]+\}', cleaned):
         try:
@@ -475,29 +450,21 @@ def download_book(url):
         r = requests.get(url, timeout=20)
         r.raise_for_status()
         text = r.text
-
-        # Remove Gutenberg header
-        for marker in ["*** START OF THE PROJECT", "*** START OF THIS", "***START OF"]:
-            idx = text.find(marker)
+        for m in ["*** START OF THE PROJECT", "*** START OF THIS", "***START OF"]:
+            idx = text.find(m)
             if idx != -1:
                 nl = text.find('\n', idx)
                 if nl != -1:
                     text = text[nl + 1:]
                 break
-
-        # Remove Gutenberg footer
-        for marker in ["*** END OF THE PROJECT", "*** END OF THIS", "***END OF", "End of the Project Gutenberg", "End of Project Gutenberg"]:
-            idx = text.find(marker)
+        for m in ["*** END OF THE PROJECT", "*** END OF THIS", "***END OF",
+                  "End of the Project Gutenberg", "End of Project Gutenberg"]:
+            idx = text.find(m)
             if idx != -1:
                 text = text[:idx]
                 break
-
         text = text.strip()
-        if len(text) < 100:
-            st.error("Downloaded text is too short.")
-            return ""
-        return text
-
+        return text if len(text) > 100 else ""
     except Exception as e:
         st.error(f"❌ Download failed: {e}")
         return ""
@@ -508,12 +475,11 @@ def download_book(url):
 # ═══════════════════════════════════════════════════════
 
 def main():
-    # ── SAFE INIT ──
+    # ── INIT ──
     defaults = {
         "lang": "EN",
         "chains": {},
         "current_chapter": 0,
-        "music_on": False,
     }
     for k, v in defaults.items():
         if k not in st.session_state:
@@ -533,13 +499,11 @@ def main():
 
     # ── LANGUAGE ──
     lang_cols = st.columns(4)
-    lang_options = [("EN", "🇬🇧"), ("DE", "🇩🇪"), ("UA", "🇺🇦"), ("FR", "🇫🇷")]
-    for i, (code, flag) in enumerate(lang_options):
+    for i, (code, flag) in enumerate([("EN", "🇬🇧"), ("DE", "🇩🇪"), ("UA", "🇺🇦"), ("FR", "🇫🇷")]):
         with lang_cols[i]:
-            current_lang = st.session_state["lang"]
-            label = f"✓ {flag}" if code == current_lang else flag
+            label = f"✓ {flag}" if code == st.session_state["lang"] else flag
             if st.button(label, key=f"lang_{code}", use_container_width=True):
-                if code != current_lang:
+                if code != st.session_state["lang"]:
                     st.session_state["lang"] = code
                     st.session_state["chains"] = {}
                     st.rerun()
@@ -553,15 +517,12 @@ def main():
     with tab1:
         uploaded = st.file_uploader("Upload", type=["pdf"], label_visibility="collapsed")
         if uploaded:
-            # Only read once
             file_id = f"{uploaded.name}_{uploaded.size}"
             if st.session_state.get("file_id") != file_id:
                 st.session_state["pdf_bytes"] = uploaded.read()
                 st.session_state["file_id"] = file_id
-                # Clear old data
                 for k in ["chapters", "chains", "current_chapter", "raw_text"]:
-                    if k in st.session_state:
-                        del st.session_state[k]
+                    st.session_state.pop(k, None)
                 st.session_state["chains"] = {}
                 st.session_state["current_chapter"] = 0
             book_ready = True
@@ -574,16 +535,14 @@ def main():
                 if txt:
                     st.session_state["raw_text"] = txt
                     for k in ["chapters", "chains", "current_chapter", "pdf_bytes", "file_id"]:
-                        if k in st.session_state:
-                            del st.session_state[k]
+                        st.session_state.pop(k, None)
                     st.session_state["chains"] = {}
                     st.session_state["current_chapter"] = 0
                     st.rerun()
-
         if "raw_text" in st.session_state:
             book_ready = True
 
-    # ── PROCESS BOOK ──
+    # ── PROCESS ──
     if book_ready and "chapters" not in st.session_state:
         with st.spinner(t("reading")):
             if "pdf_bytes" in st.session_state:
@@ -594,13 +553,12 @@ def main():
                 raw = ""
 
             if raw and len(raw) > 50:
-                chapters = split_chapters(raw)
-                st.session_state["chapters"] = chapters
+                st.session_state["chapters"] = split_chapters(raw)
                 st.session_state["current_chapter"] = 0
                 st.session_state["chains"] = {}
                 st.rerun()
             else:
-                st.error("❌ Could not extract text from this file. Try a different PDF.")
+                st.error("❌ Could not extract text. Try a different PDF.")
                 return
 
     # ── LANDING ──
@@ -614,26 +572,20 @@ def main():
         """, unsafe_allow_html=True)
         return
 
-    # ══════════════════════════════════════
-    #  DISPLAY CHAPTER
-    # ══════════════════════════════════════
-
+    # ── DISPLAY ──
     chapters = st.session_state["chapters"]
     total = len(chapters)
     cur = st.session_state["current_chapter"]
-
-    # Clamp
     if cur >= total:
         cur = total - 1
         st.session_state["current_chapter"] = cur
 
-    # ── NAVIGATION ──
+    # Navigation
     c1, c2, c3 = st.columns([1, 2, 1])
     with c1:
-        if cur > 0:
-            if st.button("⬅️", key="btn_prev", use_container_width=True):
-                st.session_state["current_chapter"] = cur - 1
-                st.rerun()
+        if cur > 0 and st.button("⬅️", key="prev", use_container_width=True):
+            st.session_state["current_chapter"] = cur - 1
+            st.rerun()
     with c2:
         st.markdown(
             f"<p style='text-align:center;color:#555;margin-top:8px;'>"
@@ -641,12 +593,11 @@ def main():
             unsafe_allow_html=True,
         )
     with c3:
-        if cur < total - 1:
-            if st.button("➡️", key="btn_next", use_container_width=True):
-                st.session_state["current_chapter"] = cur + 1
-                st.rerun()
+        if cur < total - 1 and st.button("➡️", key="nxt", use_container_width=True):
+            st.session_state["current_chapter"] = cur + 1
+            st.rerun()
 
-    # ── GENERATE CHAIN ──
+    # Generate chain
     chains = st.session_state["chains"]
     if cur not in chains:
         with st.spinner(t("building")):
@@ -658,7 +609,7 @@ def main():
 
     data = chains[cur]
 
-    # Chapter title
+    # Title
     st.markdown(f'<div class="ch-t">{data["title"]}</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="ch-s">{cur + 1} / {total}</div>', unsafe_allow_html=True)
 
@@ -666,13 +617,10 @@ def main():
     if data["chain"]:
         mood = data["chain"][0].get("mood", "calm")
         music_url = MUSIC_URLS.get(mood, MUSIC_URLS["calm"])
-
         with st.expander(f"🎵 {t('music')} — {mood.upper()}", expanded=False):
             st.audio(music_url, format="audio/mp3", loop=True)
-            else:
-                st.caption("Music unavailable. Try refreshing.")
 
-    # ── IDEA CARDS ──
+    # ── CARDS ──
     chain = data["chain"]
     for i, node in enumerate(chain):
         idea = node["idea"]
@@ -698,11 +646,10 @@ def main():
         if i < len(chain) - 1:
             st.markdown('<div class="conn">⟱</div>', unsafe_allow_html=True)
 
-    # ── END OF CHAPTER ──
+    # ── END ──
     st.markdown("---")
-
     if cur < total - 1:
-        if st.button(t("next_ch"), use_container_width=True, type="primary", key="btn_next_ch"):
+        if st.button(t("next_ch"), use_container_width=True, type="primary", key="next_ch"):
             st.session_state["current_chapter"] = cur + 1
             st.rerun()
     else:
@@ -712,16 +659,11 @@ def main():
                 <p style="color:#555;">{t('done_sub')}</p>
             </div>
         """, unsafe_allow_html=True)
-
-        if st.button(t("reset"), use_container_width=True, key="btn_reset"):
+        if st.button(t("reset"), use_container_width=True, key="reset_btn"):
             for k in list(st.session_state.keys()):
                 del st.session_state[k]
             st.rerun()
 
-
-# ══════════════════════════════════════════════════════
-#  RUN
-# ═══════════════════════════════════════════════════════
 
 if __name__ == "__main__":
     main()
