@@ -32,7 +32,7 @@ TR = {
         "land_t": "Drop a book. Start scrolling.",
         "land_s": "Any PDF becomes a visual journey.",
         "music": "🎵 Music",
-        "tap": "tap",
+        "tap": "Tap to understand",
         "what_means": "What it means",
         "example_label": "Example",
         "takeaway_label": "Takeaway",
@@ -52,7 +52,7 @@ TR = {
         "land_t": "Buch hochladen. Loscrollen.",
         "land_s": "Jedes PDF wird zur Reise.",
         "music": "🎵 Musik",
-        "tap": "tippen",
+        "tap": "Tippen zum Verstehen",
         "what_means": "Was es bedeutet",
         "example_label": "Beispiel",
         "takeaway_label": "Fazit",
@@ -72,7 +72,7 @@ TR = {
         "land_t": "Кинь книгу. Скроль.",
         "land_s": "Будь-який PDF стане подорожжю.",
         "music": "🎵 Музика",
-        "tap": "тап",
+        "tap": "Тапни щоб зрозуміти",
         "what_means": "Що це значить",
         "example_label": "Приклад",
         "takeaway_label": "Висновок",
@@ -92,7 +92,7 @@ TR = {
         "land_t": "Déposez un livre. Scrollez.",
         "land_s": "Chaque PDF devient un voyage.",
         "music": "🎵 Musique",
-        "tap": "appuyez",
+        "tap": "Appuyez pour comprendre",
         "what_means": "Ce que ça veut dire",
         "example_label": "Exemple",
         "takeaway_label": "À retenir",
@@ -130,7 +130,7 @@ st.markdown("""
     /* ── HERO CARD ── */
     .hero {
         position: relative;
-        border-radius: 22px;
+        border-radius: 22px 22px 4px 4px;
         overflow: hidden;
         margin-bottom: 0;
         height: 340px;
@@ -187,11 +187,6 @@ st.markdown("""
         border-radius: 20px;
         font-weight: 600;
     }
-    .tap-label {
-        color: rgba(255,255,255,0.3);
-        font-size: 0.9em;
-        letter-spacing: 1px;
-    }
     @keyframes pop {
         from { opacity: 0; transform: translateY(25px) scale(0.97); }
         to   { opacity: 1; transform: translateY(0) scale(1); }
@@ -209,21 +204,11 @@ st.markdown("""
         box-shadow: 0 8px 30px rgba(0,0,0,0.4);
     }
     @keyframes slideReveal {
-        from {
-            opacity: 0;
-            transform: translateY(-15px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        from { opacity: 0; transform: translateY(-15px); }
+        to   { opacity: 1; transform: translateY(0); }
     }
-    .explain-section {
-        margin-bottom: 16px;
-    }
-    .explain-section:last-child {
-        margin-bottom: 0;
-    }
+    .explain-section { margin-bottom: 16px; }
+    .explain-section:last-child { margin-bottom: 0; }
     .explain-label {
         color: #e94560;
         font-size: 0.7em;
@@ -238,21 +223,35 @@ st.markdown("""
         line-height: 1.65;
     }
 
-    /* ── Make expander look invisible ── */
-    .stExpander {
+    /* ── TAP BUTTONS ── */
+    .stButton > button {
+        background: #0d1117 !important;
+        color: #e94560 !important;
+        border: 1px solid #1a2332 !important;
+        border-radius: 0 0 16px 16px !important;
+        font-family: 'Space Grotesk', sans-serif !important;
+        font-weight: 600 !important;
+        font-size: 0.85em !important;
+        padding: 10px !important;
+        margin-top: -4px !important;
+        margin-bottom: 8px !important;
+        transition: all 0.2s !important;
+    }
+    .stButton > button:hover {
+        background: #161b22 !important;
+        border-color: #e94560 !important;
+    }
+    .stButton > button[kind="primary"] {
+        background: #e94560 !important;
+        color: white !important;
         border: none !important;
-        margin-top: -10px !important;
-        margin-bottom: 0 !important;
+        border-radius: 12px !important;
+        margin-top: 10px !important;
+        padding: 14px !important;
+        font-size: 1em !important;
     }
-    .stExpander > details {
-        border: none !important;
-        background: transparent !important;
-    }
-    .stExpander > details > summary {
-        display: none !important;
-    }
-    .stExpander > details[open] > summary {
-        display: none !important;
+    .stButton > button[kind="primary"]:hover {
+        background: #d63851 !important;
     }
 
     /* ── OTHER ── */
@@ -473,8 +472,8 @@ example: "Cesare Borgia used calculated cruelty to unify Romagna, but the result
 takeaway: "Effectiveness sometimes matters more than moral purity in leadership."
 
 BAD:
-hook: "Power is a double-edged sword." (too generic, not from the book)
-meaning: "The author discusses power." (too vague, says nothing)"""
+hook: "Power is a double-edged sword." (too generic)
+meaning: "The author discusses power." (too vague)"""
                 },
                 {
                     "role": "user",
@@ -760,23 +759,14 @@ def main():
                 ">
                     <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
                         <button id="toggleBtn" onclick="toggleMusic()" style="
-                            background: #e94560;
-                            border: none;
-                            color: white;
-                            width: 40px;
-                            height: 40px;
-                            border-radius: 50%;
-                            font-size: 18px;
-                            cursor: pointer;
+                            background: #e94560; border: none; color: white;
+                            width: 40px; height: 40px; border-radius: 50%;
+                            font-size: 18px; cursor: pointer;
                         ">▶</button>
                         <button onclick="nextTrack()" style="
-                            background: #222;
-                            border: 1px solid #333;
-                            color: #ccc;
-                            padding: 8px 16px;
-                            border-radius: 20px;
-                            cursor: pointer;
-                            font-size: 14px;
+                            background: #222; border: 1px solid #333; color: #ccc;
+                            padding: 8px 16px; border-radius: 20px;
+                            cursor: pointer; font-size: 14px;
                         ">⏭ Next</button>
                         <div style="flex:1; display:flex; align-items:center; gap:8px;">
                             <span style="font-size:12px;">🔈</span>
@@ -797,50 +787,31 @@ def main():
                     var isPlaying = false;
                     var audio = new Audio(tracks[0]);
                     audio.volume = 0;
-                    audio.addEventListener('ended', function() {{
-                        nextTrack();
-                    }});
+                    audio.addEventListener('ended', function() {{ nextTrack(); }});
                     function fadeIn() {{
                         var vol = 0;
-                        var fadeInterval = setInterval(function() {{
+                        var fi = setInterval(function() {{
                             vol += 0.005;
-                            if (vol >= targetVolume) {{
-                                vol = targetVolume;
-                                clearInterval(fadeInterval);
-                            }}
+                            if (vol >= targetVolume) {{ vol = targetVolume; clearInterval(fi); }}
                             audio.volume = vol;
                         }}, 100);
                     }}
                     function toggleMusic() {{
                         var btn = document.getElementById('toggleBtn');
-                        if (isPlaying) {{
-                            audio.pause();
-                            btn.innerHTML = '▶';
-                            isPlaying = false;
-                        }} else {{
-                            audio.play();
-                            fadeIn();
-                            btn.innerHTML = '⏸';
-                            isPlaying = true;
-                        }}
+                        if (isPlaying) {{ audio.pause(); btn.innerHTML = '▶'; isPlaying = false; }}
+                        else {{ audio.play(); fadeIn(); btn.innerHTML = '⏸'; isPlaying = true; }}
                     }}
                     function nextTrack() {{
                         currentTrack = (currentTrack + 1) % tracks.length;
-                        var wasPlaying = isPlaying;
+                        var wp = isPlaying;
                         audio.src = tracks[currentTrack];
                         document.getElementById('trackInfo').innerHTML =
                             'Track ' + (currentTrack + 1) + ' / ' + tracks.length;
-                        if (wasPlaying) {{
-                            audio.volume = 0;
-                            audio.play();
-                            fadeIn();
-                        }}
+                        if (wp) {{ audio.volume = 0; audio.play(); fadeIn(); }}
                     }}
                     function setVolume(val) {{
                         targetVolume = val / 100;
-                        if (isPlaying) {{
-                            audio.volume = targetVolume;
-                        }}
+                        if (isPlaying) {{ audio.volume = targetVolume; }}
                     }}
                     setTimeout(function() {{
                         audio.play().then(function() {{
@@ -863,8 +834,6 @@ def main():
         mood = node["mood"]
         img = get_image_url(visual, idx=cur * 100 + i)
 
-        tap_text = t("tap")
-
         # Hero card with hook
         st.markdown(f"""
             <div class="hero">
@@ -876,26 +845,34 @@ def main():
                     <div class="hero-foot">
                         <span class="mood-tag">{mood}</span>
                         <span>{i + 1}/{len(chain)}</span>
-                        <span class="tap-label">{tap_text} ▾</span>
                     </div>
                 </div>
             </div>
         """, unsafe_allow_html=True)
 
-        # Expandable explanation
+        # Tap button + explanation
         has_content = meaning or example or takeaway
         if has_content:
-            is_open = st.session_state.get(f"card_{cur}_{i}", False)
+            card_key = f"card_{cur}_{i}"
+            is_open = st.session_state.get(card_key, False)
 
-            if st.button(
-                "▾" if not is_open else "▴",
-                key=f"tap_{cur}_{i}",
-                use_container_width=True,
-            ):
-                st.session_state[f"card_{cur}_{i}"] = not is_open
-                st.rerun()
+            if not is_open:
+                if st.button(
+                    f"📖 {t('tap')} ▾",
+                    key=f"open_{cur}_{i}",
+                    use_container_width=True,
+                ):
+                    st.session_state[card_key] = True
+                    st.rerun()
+            else:
+                if st.button(
+                    "▴ ✕",
+                    key=f"close_{cur}_{i}",
+                    use_container_width=True,
+                ):
+                    st.session_state[card_key] = False
+                    st.rerun()
 
-            if is_open:
                 explain_html = '<div class="explain-card">'
                 if meaning:
                     explain_html += f'''
