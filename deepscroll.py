@@ -216,7 +216,6 @@ MUSIC_URLS = {
 
 
 @st.cache_data(ttl=3600)
-def download_music(url):
     """Download music file and return bytes for st.audio()."""
     try:
         r = requests.get(url, timeout=20)
@@ -670,8 +669,6 @@ def main():
 
         with st.expander(f"🎵 {t('music')} — {mood.upper()}", expanded=False):
             st.audio(music_url, format="audio/mp3", loop=True)
-            if music_data:
-                st.audio(music_data, format="audio/ogg", loop=True)
             else:
                 st.caption("Music unavailable. Try refreshing.")
 
@@ -722,7 +719,7 @@ def main():
             st.rerun()
 
 
-# ═══════════════════════════════════════════════════════
+# ══════════════════════════════════════════════════════
 #  RUN
 # ═══════════════════════════════════════════════════════
 
