@@ -32,7 +32,7 @@ TR = {
         "land_t": "Drop a book. Start scrolling.",
         "land_s": "Any PDF becomes a visual journey.",
         "music": "🎵 Music",
-        "tap": "Tap to understand",
+        "tap": "tap",
         "what_means": "What it means",
         "example_label": "Example",
         "takeaway_label": "Takeaway",
@@ -52,7 +52,7 @@ TR = {
         "land_t": "Buch hochladen. Loscrollen.",
         "land_s": "Jedes PDF wird zur Reise.",
         "music": "🎵 Musik",
-        "tap": "Tippen zum Verstehen",
+        "tap": "tippen",
         "what_means": "Was es bedeutet",
         "example_label": "Beispiel",
         "takeaway_label": "Fazit",
@@ -72,7 +72,7 @@ TR = {
         "land_t": "Кинь книгу. Скроль.",
         "land_s": "Будь-який PDF стане подорожжю.",
         "music": "🎵 Музика",
-        "tap": "Тапни щоб зрозуміти",
+        "tap": "тап",
         "what_means": "Що це значить",
         "example_label": "Приклад",
         "takeaway_label": "Висновок",
@@ -92,7 +92,7 @@ TR = {
         "land_t": "Déposez un livre. Scrollez.",
         "land_s": "Chaque PDF devient un voyage.",
         "music": "🎵 Musique",
-        "tap": "Appuyez pour comprendre",
+        "tap": "appuyez",
         "what_means": "Ce que ça veut dire",
         "example_label": "Exemple",
         "takeaway_label": "À retenir",
@@ -127,134 +127,6 @@ st.markdown("""
     #MainMenu, header, footer, .stDeployButton { display: none !important; }
     .block-container { padding-top: 1rem !important; max-width: 480px !important; }
 
-    /* ── HERO CARD ── */
-    .hero {
-        position: relative;
-        border-radius: 22px 22px 4px 4px;
-        overflow: hidden;
-        margin-bottom: 0;
-        height: 340px;
-        display: flex;
-        align-items: flex-end;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-        animation: pop 0.4s ease-out;
-    }
-    .hero-bg {
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        object-fit: cover;
-        z-index: 1;
-        background: #111;
-    }
-    .hero-grad {
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: linear-gradient(
-            to bottom,
-            rgba(0,0,0,0.05) 0%,
-            rgba(0,0,0,0.4) 50%,
-            rgba(0,0,0,0.92) 100%
-        );
-        z-index: 2;
-    }
-    .hero-body {
-        position: relative;
-        z-index: 3;
-        padding: 25px;
-        width: 100%;
-    }
-    .hero-txt {
-        color: #fff;
-        font-size: 1.5em;
-        font-weight: 700;
-        line-height: 1.4;
-        text-shadow: 0 2px 12px rgba(0,0,0,0.8);
-    }
-    .hero-foot {
-        color: rgba(255,255,255,0.4);
-        font-size: 0.75em;
-        margin-top: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .mood-tag {
-        background: rgba(233,69,96,0.25);
-        color: #e94560;
-        padding: 2px 10px;
-        border-radius: 20px;
-        font-weight: 600;
-    }
-    @keyframes pop {
-        from { opacity: 0; transform: translateY(25px) scale(0.97); }
-        to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    /* ── EXPLANATION CARD ── */
-    .explain-card {
-        background: linear-gradient(145deg, #0d1117, #161b22);
-        border: 1px solid #1a2332;
-        border-radius: 0 0 22px 22px;
-        padding: 22px 25px;
-        margin-top: 0;
-        margin-bottom: 10px;
-        animation: slideReveal 0.4s ease-out;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-    }
-    @keyframes slideReveal {
-        from { opacity: 0; transform: translateY(-15px); }
-        to   { opacity: 1; transform: translateY(0); }
-    }
-    .explain-section { margin-bottom: 16px; }
-    .explain-section:last-child { margin-bottom: 0; }
-    .explain-label {
-        color: #e94560;
-        font-size: 0.7em;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        margin-bottom: 5px;
-    }
-    .explain-text {
-        color: #c8c8c8;
-        font-size: 0.95em;
-        line-height: 1.65;
-    }
-
-    /* ── TAP BUTTONS ── */
-    .stButton > button {
-        background: #0d1117 !important;
-        color: #e94560 !important;
-        border: 1px solid #1a2332 !important;
-        border-radius: 0 0 16px 16px !important;
-        font-family: 'Space Grotesk', sans-serif !important;
-        font-weight: 600 !important;
-        font-size: 0.85em !important;
-        padding: 10px !important;
-        margin-top: -4px !important;
-        margin-bottom: 8px !important;
-        transition: all 0.2s !important;
-    }
-    .stButton > button:hover {
-        background: #161b22 !important;
-        border-color: #e94560 !important;
-    }
-    .stButton > button[kind="primary"] {
-        background: #e94560 !important;
-        color: white !important;
-        border: none !important;
-        border-radius: 12px !important;
-        margin-top: 10px !important;
-        padding: 14px !important;
-        font-size: 1em !important;
-    }
-    .stButton > button[kind="primary"]:hover {
-        background: #d63851 !important;
-    }
-
-    /* ── OTHER ── */
     .conn {
         text-align: center;
         color: #e94560;
@@ -281,6 +153,22 @@ st.markdown("""
     }
     .land h2 { color: #ccc; font-weight: 700; }
     .land p { color: #555; }
+
+    /* Make primary buttons styled */
+    .stButton > button[kind="primary"] {
+        background: #e94560 !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 12px !important;
+        margin-top: 10px !important;
+        padding: 14px !important;
+        font-size: 1em !important;
+        font-family: 'Space Grotesk', sans-serif !important;
+        font-weight: 600 !important;
+    }
+    .stButton > button[kind="primary"]:hover {
+        background: #d63851 !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -454,26 +342,13 @@ CRITICAL RULES:
 - Do NOT write generic philosophy like "power corrupts"
 - EXPLAIN the actual ideas from THIS specific chapter
 - Make it simple enough for a student
-- The hook should make the reader want to tap for more
-- The meaning should actually TEACH something new
-- The example must be SPECIFIC not abstract
 - Generate exactly 5 cards
 - visual: 2-3 English words for a landscape/nature photo
 - mood: one of: dark, epic, calm, mysterious, hopeful, intense, melancholic
 - {ai_lang}
 
 Return ONLY a JSON array:
-[{{"hook":"short headline","meaning":"clear explanation","example":"specific example","takeaway":"lesson learned","visual":"photo keywords","mood":"calm"}}]
-
-GOOD:
-hook: "A prince must learn when NOT to be good."
-meaning: "Machiavelli argues that always being moral makes a ruler vulnerable. Sometimes survival requires tough choices that go against conventional morality."
-example: "Cesare Borgia used calculated cruelty to unify Romagna, but the result was peace and order for the people."
-takeaway: "Effectiveness sometimes matters more than moral purity in leadership."
-
-BAD:
-hook: "Power is a double-edged sword." (too generic)
-meaning: "The author discusses power." (too vague)"""
+[{{"hook":"short headline","meaning":"clear explanation","example":"specific example","takeaway":"lesson learned","visual":"photo keywords","mood":"calm"}}]"""
                 },
                 {
                     "role": "user",
@@ -601,6 +476,233 @@ def download_book(url):
 
 
 # ═══════════════════════════════════════════════════════
+#  CARD COMPONENT (HTML with animation)
+# ═══════════════════════════════════════════════════════
+
+def render_card(hook, meaning, example, takeaway, mood, img_url, index, total, tap_text, lbl_meaning, lbl_example, lbl_takeaway):
+    """Render a single card as an HTML component with tap-to-expand animation."""
+
+    # Escape quotes for safe HTML embedding
+    hook_safe = hook.replace('"', '&quot;').replace("'", "&#39;")
+    meaning_safe = meaning.replace('"', '&quot;').replace("'", "&#39;")
+    example_safe = example.replace('"', '&quot;').replace("'", "&#39;")
+    takeaway_safe = takeaway.replace('"', '&quot;').replace("'", "&#39;")
+
+    has_content = bool(meaning or example or takeaway)
+
+    explain_sections = ""
+    if meaning:
+        explain_sections += f'''
+            <div class="ex-section">
+                <div class="ex-label">📖 {lbl_meaning}</div>
+                <div class="ex-text">{meaning_safe}</div>
+            </div>'''
+    if example:
+        explain_sections += f'''
+            <div class="ex-section">
+                <div class="ex-label">💡 {lbl_example}</div>
+                <div class="ex-text">{example_safe}</div>
+            </div>'''
+    if takeaway:
+        explain_sections += f'''
+            <div class="ex-section">
+                <div class="ex-label">🔑 {lbl_takeaway}</div>
+                <div class="ex-text">{takeaway_safe}</div>
+            </div>'''
+
+    tap_html = ""
+    if has_content:
+        tap_html = f'''
+            <div class="tap-zone" onclick="toggleCard()">
+                <span class="tap-text" id="tapText">{tap_text} ▾</span>
+            </div>
+            <div class="explain" id="explainBox">
+                {explain_sections}
+            </div>
+        '''
+
+    card_html = f"""
+    <html>
+    <head>
+        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+        <style>
+            * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+            body {{
+                background: transparent;
+                font-family: 'Space Grotesk', sans-serif;
+                overflow: hidden;
+            }}
+
+            .card-wrapper {{
+                width: 100%;
+                transition: all 0.4s ease;
+            }}
+
+            .hero {{
+                position: relative;
+                border-radius: 22px 22px 4px 4px;
+                overflow: hidden;
+                height: 320px;
+                display: flex;
+                align-items: flex-end;
+                cursor: pointer;
+            }}
+            .hero-bg {{
+                position: absolute;
+                top: 0; left: 0;
+                width: 100%; height: 100%;
+                object-fit: cover;
+                z-index: 1;
+                background: #111;
+            }}
+            .hero-grad {{
+                position: absolute;
+                top: 0; left: 0;
+                width: 100%; height: 100%;
+                background: linear-gradient(
+                    to bottom,
+                    rgba(0,0,0,0.05) 0%,
+                    rgba(0,0,0,0.4) 50%,
+                    rgba(0,0,0,0.92) 100%
+                );
+                z-index: 2;
+            }}
+            .hero-body {{
+                position: relative;
+                z-index: 3;
+                padding: 25px;
+                width: 100%;
+            }}
+            .hero-txt {{
+                color: #fff;
+                font-size: 1.45em;
+                font-weight: 700;
+                line-height: 1.4;
+                text-shadow: 0 2px 12px rgba(0,0,0,0.8);
+            }}
+            .hero-foot {{
+                color: rgba(255,255,255,0.4);
+                font-size: 0.75em;
+                margin-top: 10px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }}
+            .mood-tag {{
+                background: rgba(233,69,96,0.25);
+                color: #e94560;
+                padding: 2px 10px;
+                border-radius: 20px;
+                font-weight: 600;
+            }}
+
+            .tap-zone {{
+                background: #0d1117;
+                border: 1px solid #1a2332;
+                border-top: none;
+                padding: 10px;
+                text-align: center;
+                cursor: pointer;
+                transition: all 0.3s;
+                border-radius: 0 0 4px 4px;
+            }}
+            .tap-zone:hover {{
+                background: #161b22;
+                border-color: #e94560;
+            }}
+            .tap-text {{
+                color: #e94560;
+                font-size: 0.85em;
+                font-weight: 600;
+                letter-spacing: 0.5px;
+            }}
+
+            .explain {{
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.5s ease, padding 0.5s ease, opacity 0.4s ease;
+                opacity: 0;
+                background: linear-gradient(145deg, #0d1117, #161b22);
+                border: 1px solid #1a2332;
+                border-top: none;
+                border-radius: 0 0 22px 22px;
+                padding: 0 25px;
+            }}
+            .explain.open {{
+                max-height: 600px;
+                opacity: 1;
+                padding: 22px 25px;
+            }}
+
+            .ex-section {{ margin-bottom: 16px; }}
+            .ex-section:last-child {{ margin-bottom: 0; }}
+            .ex-label {{
+                color: #e94560;
+                font-size: 0.7em;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 1.5px;
+                margin-bottom: 5px;
+            }}
+            .ex-text {{
+                color: #c8c8c8;
+                font-size: 0.93em;
+                line-height: 1.65;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="card-wrapper" id="cardWrapper">
+            <div class="hero" onclick="toggleCard()">
+                <img class="hero-bg" src="{img_url}" loading="lazy"
+                     onerror="this.src='https://picsum.photos/seed/fallback{index}/800/600'">
+                <div class="hero-grad"></div>
+                <div class="hero-body">
+                    <div class="hero-txt">{hook_safe}</div>
+                    <div class="hero-foot">
+                        <span class="mood-tag">{mood}</span>
+                        <span>{index + 1}/{total}</span>
+                    </div>
+                </div>
+            </div>
+            {tap_html}
+        </div>
+
+        <script>
+            var isOpen = false;
+
+            function toggleCard() {{
+                var box = document.getElementById('explainBox');
+                var tapText = document.getElementById('tapText');
+                if (!box || !tapText) return;
+
+                isOpen = !isOpen;
+
+                if (isOpen) {{
+                    box.classList.add('open');
+                    tapText.innerHTML = '▴ close';
+                    // Resize iframe to fit content
+                    setTimeout(function() {{
+                        var h = document.getElementById('cardWrapper').scrollHeight;
+                        window.frameElement.style.height = h + 'px';
+                    }}, 50);
+                }} else {{
+                    box.classList.remove('open');
+                    tapText.innerHTML = '{tap_text} ▾';
+                    setTimeout(function() {{
+                        window.frameElement.style.height = '380px';
+                    }}, 50);
+                }}
+            }}
+        </script>
+    </body>
+    </html>
+    """
+
+    components.html(card_html, height=380, scrolling=False)
+
+
+# ═══════════════════════════════════════════════════════
 #  MAIN
 # ═══════════════════════════════════════════════════════
 
@@ -687,7 +789,7 @@ def main():
                 st.session_state["chains"] = {}
                 st.rerun()
             else:
-                st.error("❌ Could not extract text. Try a different PDF.")
+                st.error("❌ Could not extract text.")
                 return
 
     # ── LANDING ──
@@ -752,150 +854,75 @@ def main():
             components.html(f"""
                 <div style="
                     font-family: 'Segoe UI', sans-serif;
-                    background: #111;
-                    border-radius: 12px;
-                    padding: 15px;
-                    color: #ccc;
+                    background: #111; border-radius: 12px;
+                    padding: 15px; color: #ccc;
                 ">
-                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
                         <button id="toggleBtn" onclick="toggleMusic()" style="
-                            background: #e94560; border: none; color: white;
-                            width: 40px; height: 40px; border-radius: 50%;
-                            font-size: 18px; cursor: pointer;
-                        ">▶</button>
+                            background:#e94560;border:none;color:white;
+                            width:40px;height:40px;border-radius:50%;
+                            font-size:18px;cursor:pointer;">▶</button>
                         <button onclick="nextTrack()" style="
-                            background: #222; border: 1px solid #333; color: #ccc;
-                            padding: 8px 16px; border-radius: 20px;
-                            cursor: pointer; font-size: 14px;
-                        ">⏭ Next</button>
-                        <div style="flex:1; display:flex; align-items:center; gap:8px;">
+                            background:#222;border:1px solid #333;color:#ccc;
+                            padding:8px 16px;border-radius:20px;
+                            cursor:pointer;font-size:14px;">⏭ Next</button>
+                        <div style="flex:1;display:flex;align-items:center;gap:8px;">
                             <span style="font-size:12px;">🔈</span>
-                            <input type="range" id="volSlider" min="0" max="100" value="25"
-                                style="flex:1; accent-color:#e94560; height:4px;"
+                            <input type="range" min="0" max="100" value="25"
+                                style="flex:1;accent-color:#e94560;height:4px;"
                                 oninput="setVolume(this.value)">
                             <span style="font-size:12px;">🔊</span>
                         </div>
                     </div>
-                    <div id="trackInfo" style="font-size:11px; color:#555; text-align:center;">
-                        Track 1 / {len(tracks)}
-                    </div>
+                    <div id="trackInfo" style="font-size:11px;color:#555;text-align:center;">
+                        Track 1 / {len(tracks)}</div>
                 </div>
                 <script>
-                    var tracks = {tracks_json};
-                    var currentTrack = 0;
-                    var targetVolume = 0.25;
-                    var isPlaying = false;
-                    var audio = new Audio(tracks[0]);
-                    audio.volume = 0;
-                    audio.addEventListener('ended', function() {{ nextTrack(); }});
-                    function fadeIn() {{
-                        var vol = 0;
-                        var fi = setInterval(function() {{
-                            vol += 0.005;
-                            if (vol >= targetVolume) {{ vol = targetVolume; clearInterval(fi); }}
-                            audio.volume = vol;
-                        }}, 100);
-                    }}
-                    function toggleMusic() {{
-                        var btn = document.getElementById('toggleBtn');
-                        if (isPlaying) {{ audio.pause(); btn.innerHTML = '▶'; isPlaying = false; }}
-                        else {{ audio.play(); fadeIn(); btn.innerHTML = '⏸'; isPlaying = true; }}
-                    }}
-                    function nextTrack() {{
-                        currentTrack = (currentTrack + 1) % tracks.length;
-                        var wp = isPlaying;
-                        audio.src = tracks[currentTrack];
-                        document.getElementById('trackInfo').innerHTML =
-                            'Track ' + (currentTrack + 1) + ' / ' + tracks.length;
-                        if (wp) {{ audio.volume = 0; audio.play(); fadeIn(); }}
-                    }}
-                    function setVolume(val) {{
-                        targetVolume = val / 100;
-                        if (isPlaying) {{ audio.volume = targetVolume; }}
-                    }}
-                    setTimeout(function() {{
-                        audio.play().then(function() {{
-                            isPlaying = true;
-                            document.getElementById('toggleBtn').innerHTML = '⏸';
-                            fadeIn();
-                        }}).catch(function() {{}});
-                    }}, 2000);
+                    var tracks={tracks_json};var ct=0;var tv=0.25;var ip=false;
+                    var audio=new Audio(tracks[0]);audio.volume=0;
+                    audio.addEventListener('ended',function(){{nextTrack();}});
+                    function fadeIn(){{var v=0;var fi=setInterval(function(){{
+                        v+=0.005;if(v>=tv){{v=tv;clearInterval(fi);}}audio.volume=v;}},100);}}
+                    function toggleMusic(){{var b=document.getElementById('toggleBtn');
+                        if(ip){{audio.pause();b.innerHTML='▶';ip=false;}}
+                        else{{audio.play();fadeIn();b.innerHTML='⏸';ip=true;}}}}
+                    function nextTrack(){{ct=(ct+1)%tracks.length;var wp=ip;
+                        audio.src=tracks[ct];document.getElementById('trackInfo').innerHTML=
+                        'Track '+(ct+1)+' / '+tracks.length;
+                        if(wp){{audio.volume=0;audio.play();fadeIn();}}}}
+                    function setVolume(val){{tv=val/100;if(ip){{audio.volume=tv;}}}}
+                    setTimeout(function(){{audio.play().then(function(){{
+                        ip=true;document.getElementById('toggleBtn').innerHTML='⏸';
+                        fadeIn();}}).catch(function(){{}});}},2000);
                 </script>
             """, height=100)
 
-    # ── CARDS ──
+    # ── CARDS (with animation!) ──
     chain = data["chain"]
     for i, node in enumerate(chain):
-        hook = node["hook"]
+        hook = node.get("hook", node.get("idea", "..."))
         meaning = node.get("meaning", "")
         example = node.get("example", "")
         takeaway = node.get("takeaway", "")
-        visual = node["visual"]
-        mood = node["mood"]
+        visual = node.get("visual", "abstract")
+        mood = node.get("mood", "calm")
         img = get_image_url(visual, idx=cur * 100 + i)
 
-        # Hero card with hook
-        st.markdown(f"""
-            <div class="hero">
-                <img class="hero-bg" src="{img}" loading="lazy"
-                     onerror="this.src='https://picsum.photos/seed/fb{cur}{i}/800/600'">
-                <div class="hero-grad"></div>
-                <div class="hero-body">
-                    <div class="hero-txt">{hook}</div>
-                    <div class="hero-foot">
-                        <span class="mood-tag">{mood}</span>
-                        <span>{i + 1}/{len(chain)}</span>
-                    </div>
-                </div>
-            </div>
-        """, unsafe_allow_html=True)
+        render_card(
+            hook=hook,
+            meaning=meaning,
+            example=example,
+            takeaway=takeaway,
+            mood=mood,
+            img_url=img,
+            index=i,
+            total=len(chain),
+            tap_text=t("tap"),
+            lbl_meaning=t("what_means"),
+            lbl_example=t("example_label"),
+            lbl_takeaway=t("takeaway_label"),
+        )
 
-        # Tap button + explanation
-        has_content = meaning or example or takeaway
-        if has_content:
-            card_key = f"card_{cur}_{i}"
-            is_open = st.session_state.get(card_key, False)
-
-            if not is_open:
-                if st.button(
-                    f"📖 {t('tap')} ▾",
-                    key=f"open_{cur}_{i}",
-                    use_container_width=True,
-                ):
-                    st.session_state[card_key] = True
-                    st.rerun()
-            else:
-                if st.button(
-                    "▴ ✕",
-                    key=f"close_{cur}_{i}",
-                    use_container_width=True,
-                ):
-                    st.session_state[card_key] = False
-                    st.rerun()
-
-                explain_html = '<div class="explain-card">'
-                if meaning:
-                    explain_html += f'''
-                        <div class="explain-section">
-                            <div class="explain-label">📖 {t("what_means")}</div>
-                            <div class="explain-text">{meaning}</div>
-                        </div>'''
-                if example:
-                    explain_html += f'''
-                        <div class="explain-section">
-                            <div class="explain-label">💡 {t("example_label")}</div>
-                            <div class="explain-text">{example}</div>
-                        </div>'''
-                if takeaway:
-                    explain_html += f'''
-                        <div class="explain-section">
-                            <div class="explain-label">🔑 {t("takeaway_label")}</div>
-                            <div class="explain-text">{takeaway}</div>
-                        </div>'''
-                explain_html += '</div>'
-                st.markdown(explain_html, unsafe_allow_html=True)
-
-        # Connector
         if i < len(chain) - 1:
             st.markdown('<div class="conn">⟱</div>', unsafe_allow_html=True)
 
