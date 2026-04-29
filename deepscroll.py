@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import requests
 import json
 import re
@@ -31,7 +32,11 @@ TR = {
         "land_t": "Drop a book. Start scrolling.",
         "land_s": "Any PDF becomes a visual journey.",
         "music": "🎵 Music",
-        "ai": "Write each idea in MAX 12 words in English. Short like a billboard.",
+        "tap": "tap",
+        "what_means": "What it means",
+        "example_label": "Example",
+        "takeaway_label": "Takeaway",
+        "ai": "Write hook in MAX 12 words in English. Write meaning, example, takeaway in English.",
     },
     "DE": {
         "sub": "Scrolle Wissen. Kein Lärm.",
@@ -47,7 +52,11 @@ TR = {
         "land_t": "Buch hochladen. Loscrollen.",
         "land_s": "Jedes PDF wird zur Reise.",
         "music": "🎵 Musik",
-        "ai": "Write each idea in MAX 12 words in German. Short like a billboard.",
+        "tap": "tippen",
+        "what_means": "Was es bedeutet",
+        "example_label": "Beispiel",
+        "takeaway_label": "Fazit",
+        "ai": "Write hook in MAX 12 words in German. Write meaning, example, takeaway in German.",
     },
     "UA": {
         "sub": "Скроль мудрість. Без шуму.",
@@ -63,7 +72,11 @@ TR = {
         "land_t": "Кинь книгу. Скроль.",
         "land_s": "Будь-який PDF стане подорожжю.",
         "music": "🎵 Музика",
-        "ai": "Write each idea in MAX 12 words in Ukrainian. Short like a billboard.",
+        "tap": "тап",
+        "what_means": "Що це значить",
+        "example_label": "Приклад",
+        "takeaway_label": "Висновок",
+        "ai": "Write hook in MAX 12 words in Ukrainian. Write meaning, example, takeaway in Ukrainian.",
     },
     "FR": {
         "sub": "Scrollez le savoir. Zéro bruit.",
@@ -79,7 +92,11 @@ TR = {
         "land_t": "Déposez un livre. Scrollez.",
         "land_s": "Chaque PDF devient un voyage.",
         "music": "🎵 Musique",
-        "ai": "Write each idea in MAX 12 words in French. Short like a billboard.",
+        "tap": "appuyez",
+        "what_means": "Ce que ça veut dire",
+        "example_label": "Exemple",
+        "takeaway_label": "À retenir",
+        "ai": "Write hook in MAX 12 words in French. Write meaning, example, takeaway in French.",
     },
 }
 
@@ -110,11 +127,12 @@ st.markdown("""
     #MainMenu, header, footer, .stDeployButton { display: none !important; }
     .block-container { padding-top: 1rem !important; max-width: 480px !important; }
 
+    /* ── HERO CARD ── */
     .hero {
         position: relative;
         border-radius: 22px;
         overflow: hidden;
-        margin-bottom: 10px;
+        margin-bottom: 0;
         height: 340px;
         display: flex;
         align-items: flex-end;
@@ -160,6 +178,7 @@ st.markdown("""
         margin-top: 10px;
         display: flex;
         justify-content: space-between;
+        align-items: center;
     }
     .mood-tag {
         background: rgba(233,69,96,0.25);
@@ -168,16 +187,80 @@ st.markdown("""
         border-radius: 20px;
         font-weight: 600;
     }
+    .tap-label {
+        color: rgba(255,255,255,0.3);
+        font-size: 0.9em;
+        letter-spacing: 1px;
+    }
     @keyframes pop {
         from { opacity: 0; transform: translateY(25px) scale(0.97); }
         to   { opacity: 1; transform: translateY(0) scale(1); }
     }
 
+    /* ── EXPLANATION CARD ── */
+    .explain-card {
+        background: linear-gradient(145deg, #0d1117, #161b22);
+        border: 1px solid #1a2332;
+        border-radius: 0 0 22px 22px;
+        padding: 22px 25px;
+        margin-top: 0;
+        margin-bottom: 10px;
+        animation: slideReveal 0.4s ease-out;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    }
+    @keyframes slideReveal {
+        from {
+            opacity: 0;
+            transform: translateY(-15px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    .explain-section {
+        margin-bottom: 16px;
+    }
+    .explain-section:last-child {
+        margin-bottom: 0;
+    }
+    .explain-label {
+        color: #e94560;
+        font-size: 0.7em;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 5px;
+    }
+    .explain-text {
+        color: #c8c8c8;
+        font-size: 0.95em;
+        line-height: 1.65;
+    }
+
+    /* ── Make expander look invisible ── */
+    .stExpander {
+        border: none !important;
+        margin-top: -10px !important;
+        margin-bottom: 0 !important;
+    }
+    .stExpander > details {
+        border: none !important;
+        background: transparent !important;
+    }
+    .stExpander > details > summary {
+        display: none !important;
+    }
+    .stExpander > details[open] > summary {
+        display: none !important;
+    }
+
+    /* ── OTHER ── */
     .conn {
         text-align: center;
         color: #e94560;
         font-size: 22px;
-        margin: 3px 0;
+        margin: 6px 0;
         opacity: 0.4;
     }
     .ch-t {
@@ -220,8 +303,7 @@ client = get_groq()
 
 
 # ═══════════════════════════════════════════════════════
-#  MUSIC — Ambient/Lo-fi/Chill (free, direct links)
-#  Each mood has 3+ tracks for auto-rotation
+#  MUSIC
 # ═══════════════════════════════════════════════════════
 
 MUSIC = {
@@ -261,8 +343,10 @@ MUSIC = {
         "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
     ],
 }
+
+
 # ═══════════════════════════════════════════════════════
-#  IMAGES — picsum.photos (instant, always works)
+#  IMAGES
 # ═══════════════════════════════════════════════════════
 
 def get_image_url(prompt, idx=0):
@@ -271,7 +355,7 @@ def get_image_url(prompt, idx=0):
 
 
 # ═══════════════════════════════════════════════════════
-#  PDF EXTRACTION
+#  PDF
 # ═══════════════════════════════════════════════════════
 
 def extract_pdf(pdf_bytes):
@@ -349,7 +433,7 @@ def split_chapters(text):
 
 def make_chain(chapter_text):
     if not client:
-        return [{"idea": "No AI.", "visual": "abstract", "mood": "calm"}]
+        return [{"hook": "No AI.", "meaning": "", "example": "", "takeaway": "", "visual": "abstract", "mood": "calm"}]
 
     ai_lang = t("ai")
 
@@ -358,36 +442,53 @@ def make_chain(chapter_text):
             messages=[
                 {
                     "role": "system",
-                    "content": f"""You create IDEA CHAINS for people with ADHD.
+                    "content": f"""You summarize book chapters into scrollable cards that TEACH the reader.
 
-RULES:
-- Each idea: MAX 12 WORDS. Like a billboard. Like a meme.
-- NO filler. NO "the author says". Just raw insight.
-- Ideas connect: cause→effect or question→answer
-- Generate exactly 5 ideas
-- visual: 2-3 English words for a nature/landscape photo
+Each card has 4 parts:
+1. hook: Short punchy sentence (MAX 12 words). Makes reader curious.
+2. meaning: What the author ACTUALLY means. 1-2 simple sentences. Faithful to the chapter.
+3. example: One CONCRETE example from the book, history, or real life. 1 sentence.
+4. takeaway: One short conclusion or lesson. 1 sentence.
+
+CRITICAL RULES:
+- Do NOT write vague motivational quotes
+- Do NOT write generic philosophy like "power corrupts"
+- EXPLAIN the actual ideas from THIS specific chapter
+- Make it simple enough for a student
+- The hook should make the reader want to tap for more
+- The meaning should actually TEACH something new
+- The example must be SPECIFIC not abstract
+- Generate exactly 5 cards
+- visual: 2-3 English words for a landscape/nature photo
 - mood: one of: dark, epic, calm, mysterious, hopeful, intense, melancholic
 - {ai_lang}
 
-Return ONLY JSON array. No markdown. No explanation.
-[{{"idea":"short text","visual":"photo keywords","mood":"calm"}}]
+Return ONLY a JSON array:
+[{{"hook":"short headline","meaning":"clear explanation","example":"specific example","takeaway":"lesson learned","visual":"photo keywords","mood":"calm"}}]
 
-GOOD: "Power doesn't corrupt. It reveals."
-BAD: "The author discusses how power is a mechanism that corrupts people over time" """
+GOOD:
+hook: "A prince must learn when NOT to be good."
+meaning: "Machiavelli argues that always being moral makes a ruler vulnerable. Sometimes survival requires tough choices that go against conventional morality."
+example: "Cesare Borgia used calculated cruelty to unify Romagna, but the result was peace and order for the people."
+takeaway: "Effectiveness sometimes matters more than moral purity in leadership."
+
+BAD:
+hook: "Power is a double-edged sword." (too generic, not from the book)
+meaning: "The author discusses power." (too vague, says nothing)"""
                 },
                 {
                     "role": "user",
-                    "content": f"Create idea chain:\n\n{chapter_text[:3000]}"
+                    "content": f"Summarize this chapter into idea cards:\n\n{chapter_text[:3000]}"
                 }
             ],
             model=AI_MODEL,
             temperature=0.7,
-            max_tokens=1200,
+            max_tokens=2000,
         )
         return parse_json(r.choices[0].message.content.strip())
     except Exception as e:
         st.warning(f"⚠️ AI error: {e}")
-        return [{"idea": "Could not generate. Refresh.", "visual": "abstract", "mood": "calm"}]
+        return [{"hook": "Error. Refresh.", "meaning": "", "example": "", "takeaway": "", "visual": "abstract", "mood": "calm"}]
 
 
 def make_title(chapter_text):
@@ -438,7 +539,7 @@ def parse_json(raw):
     if objs:
         return validate(objs)
 
-    return [{"idea": raw[:200], "visual": "abstract", "mood": "calm"}]
+    return [{"hook": raw[:200], "meaning": "", "example": "", "takeaway": "", "visual": "abstract", "mood": "calm"}]
 
 
 def validate(chain):
@@ -448,14 +549,17 @@ def validate(chain):
         if not isinstance(item, dict):
             continue
         v = {
-            "idea": str(item.get("idea", "...")),
+            "hook": str(item.get("hook", item.get("idea", "..."))),
+            "meaning": str(item.get("meaning", "")),
+            "example": str(item.get("example", "")),
+            "takeaway": str(item.get("takeaway", "")),
             "visual": str(item.get("visual", item.get("visual_prompt", "abstract"))),
             "mood": str(item.get("mood", "calm")).lower().strip(),
         }
         if v["mood"] not in moods:
             v["mood"] = "calm"
         out.append(v)
-    return out or [{"idea": "...", "visual": "abstract", "mood": "calm"}]
+    return out or [{"hook": "...", "meaning": "", "example": "", "takeaway": "", "visual": "abstract", "mood": "calm"}]
 
 
 # ═══════════════════════════════════════════════════════
@@ -578,7 +682,6 @@ def main():
                 raw = st.session_state["raw_text"]
             else:
                 raw = ""
-
             if raw and len(raw) > 50:
                 st.session_state["chapters"] = split_chapters(raw)
                 st.session_state["current_chapter"] = 0
@@ -640,17 +743,15 @@ def main():
     st.markdown(f'<div class="ch-t">{data["title"]}</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="ch-s">{cur + 1} / {total}</div>', unsafe_allow_html=True)
 
-       # ── MUSIC (ambient, auto-fade-in, auto-next, toggleable) ──
+    # ── MUSIC ──
     if data["chain"]:
         mood = data["chain"][0].get("mood", "calm")
         tracks = MUSIC.get(mood, MUSIC["calm"])
         tracks_json = json.dumps(tracks)
 
         with st.expander(f"🎵 {t('music')} — {mood.upper()}", expanded=False):
-            import streamlit.components.v1 as components
-
             components.html(f"""
-                <div id="music-box" style="
+                <div style="
                     font-family: 'Segoe UI', sans-serif;
                     background: #111;
                     border-radius: 12px;
@@ -668,7 +769,6 @@ def main():
                             font-size: 18px;
                             cursor: pointer;
                         ">▶</button>
-
                         <button onclick="nextTrack()" style="
                             background: #222;
                             border: 1px solid #333;
@@ -678,7 +778,6 @@ def main():
                             cursor: pointer;
                             font-size: 14px;
                         ">⏭ Next</button>
-
                         <div style="flex:1; display:flex; align-items:center; gap:8px;">
                             <span style="font-size:12px;">🔈</span>
                             <input type="range" id="volSlider" min="0" max="100" value="25"
@@ -687,26 +786,20 @@ def main():
                             <span style="font-size:12px;">🔊</span>
                         </div>
                     </div>
-
                     <div id="trackInfo" style="font-size:11px; color:#555; text-align:center;">
                         Track 1 / {len(tracks)}
                     </div>
                 </div>
-
                 <script>
                     var tracks = {tracks_json};
                     var currentTrack = 0;
                     var targetVolume = 0.25;
                     var isPlaying = false;
-
                     var audio = new Audio(tracks[0]);
                     audio.volume = 0;
-
-                    // Auto-next when track ends
                     audio.addEventListener('ended', function() {{
                         nextTrack();
                     }});
-
                     function fadeIn() {{
                         var vol = 0;
                         var fadeInterval = setInterval(function() {{
@@ -718,7 +811,6 @@ def main():
                             audio.volume = vol;
                         }}, 100);
                     }}
-
                     function toggleMusic() {{
                         var btn = document.getElementById('toggleBtn');
                         if (isPlaying) {{
@@ -732,7 +824,6 @@ def main():
                             isPlaying = true;
                         }}
                     }}
-
                     function nextTrack() {{
                         currentTrack = (currentTrack + 1) % tracks.length;
                         var wasPlaying = isPlaying;
@@ -745,23 +836,18 @@ def main():
                             fadeIn();
                         }}
                     }}
-
                     function setVolume(val) {{
                         targetVolume = val / 100;
                         if (isPlaying) {{
                             audio.volume = targetVolume;
                         }}
                     }}
-
-                    // Auto-start with fade-in after 2 seconds
                     setTimeout(function() {{
                         audio.play().then(function() {{
                             isPlaying = true;
                             document.getElementById('toggleBtn').innerHTML = '⏸';
                             fadeIn();
-                        }}).catch(function() {{
-                            // Browser blocked autoplay, user needs to click
-                        }});
+                        }}).catch(function() {{}});
                     }}, 2000);
                 </script>
             """, height=100)
@@ -769,26 +855,70 @@ def main():
     # ── CARDS ──
     chain = data["chain"]
     for i, node in enumerate(chain):
-        idea = node["idea"]
+        hook = node["hook"]
+        meaning = node.get("meaning", "")
+        example = node.get("example", "")
+        takeaway = node.get("takeaway", "")
         visual = node["visual"]
         mood = node["mood"]
         img = get_image_url(visual, idx=cur * 100 + i)
 
+        tap_text = t("tap")
+
+        # Hero card with hook
         st.markdown(f"""
             <div class="hero">
                 <img class="hero-bg" src="{img}" loading="lazy"
                      onerror="this.src='https://picsum.photos/seed/fb{cur}{i}/800/600'">
                 <div class="hero-grad"></div>
                 <div class="hero-body">
-                    <div class="hero-txt">{idea}</div>
+                    <div class="hero-txt">{hook}</div>
                     <div class="hero-foot">
                         <span class="mood-tag">{mood}</span>
                         <span>{i + 1}/{len(chain)}</span>
+                        <span class="tap-label">{tap_text} ▾</span>
                     </div>
                 </div>
             </div>
         """, unsafe_allow_html=True)
 
+        # Expandable explanation
+        has_content = meaning or example or takeaway
+        if has_content:
+            is_open = st.session_state.get(f"card_{cur}_{i}", False)
+
+            if st.button(
+                "▾" if not is_open else "▴",
+                key=f"tap_{cur}_{i}",
+                use_container_width=True,
+            ):
+                st.session_state[f"card_{cur}_{i}"] = not is_open
+                st.rerun()
+
+            if is_open:
+                explain_html = '<div class="explain-card">'
+                if meaning:
+                    explain_html += f'''
+                        <div class="explain-section">
+                            <div class="explain-label">📖 {t("what_means")}</div>
+                            <div class="explain-text">{meaning}</div>
+                        </div>'''
+                if example:
+                    explain_html += f'''
+                        <div class="explain-section">
+                            <div class="explain-label">💡 {t("example_label")}</div>
+                            <div class="explain-text">{example}</div>
+                        </div>'''
+                if takeaway:
+                    explain_html += f'''
+                        <div class="explain-section">
+                            <div class="explain-label">🔑 {t("takeaway_label")}</div>
+                            <div class="explain-text">{takeaway}</div>
+                        </div>'''
+                explain_html += '</div>'
+                st.markdown(explain_html, unsafe_allow_html=True)
+
+        # Connector
         if i < len(chain) - 1:
             st.markdown('<div class="conn">⟱</div>', unsafe_allow_html=True)
 
