@@ -201,18 +201,17 @@ client = get_groq()
 
 
 # ═══════════════════════════════════════════════════════
-#  MUSIC — Download and serve via Streamlit natively
+#  MUSIC — Using st.audio with direct working URLs
 # ═══════════════════════════════════════════════════════
 
-# These are direct .mp3 URLs that allow hotlinking
 MUSIC_URLS = {
-    "dark": "https://upload.wikimedia.org/wikipedia/commons/4/47/Pista_de_audio.ogg",
-    "epic": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Microtonal_music.ogg",
-    "calm": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Threnody_for_the_Victims_of_Hiroshima_%28excerpt%29.ogg",
-    "mysterious": "https://upload.wikimedia.org/wikipedia/commons/4/47/Pista_de_audio.ogg",
-    "hopeful": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Microtonal_music.ogg",
-    "intense": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Microtonal_music.ogg",
-    "melancholic": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Threnody_for_the_Victims_of_Hiroshima_%28excerpt%29.ogg",
+    "dark": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
+    "epic": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+    "calm": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+    "mysterious": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3",
+    "hopeful": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
+    "intense": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+    "melancholic": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
 }
 
 
@@ -664,13 +663,13 @@ def main():
     st.markdown(f'<div class="ch-t">{data["title"]}</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="ch-s">{cur + 1} / {total}</div>', unsafe_allow_html=True)
 
-    # ── MUSIC (native Streamlit — no JS!) ──
+    # ── MUSIC ──
     if data["chain"]:
         mood = data["chain"][0].get("mood", "calm")
         music_url = MUSIC_URLS.get(mood, MUSIC_URLS["calm"])
 
         with st.expander(f"🎵 {t('music')} — {mood.upper()}", expanded=False):
-            music_data = download_music(music_url)
+            st.audio(music_url, format="audio/mp3", loop=True)
             if music_data:
                 st.audio(music_data, format="audio/ogg", loop=True)
             else:
