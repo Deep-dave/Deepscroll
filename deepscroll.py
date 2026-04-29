@@ -220,20 +220,47 @@ client = get_groq()
 
 
 # ═══════════════════════════════════════════════════════
-#  MUSIC — SoundHelix (free, always works, no CORS)
+#  MUSIC — Ambient/Lo-fi/Chill (free, direct links)
+#  Each mood has 3+ tracks for auto-rotation
 # ═══════════════════════════════════════════════════════
 
-MUSIC_URLS = {
-    "dark":        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
-    "epic":        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-    "calm":        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-    "mysterious":  "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3",
-    "hopeful":     "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
-    "intense":     "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-    "melancholic": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
+MUSIC = {
+    "dark": [
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3",
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3",
+    ],
+    "epic": [
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3",
+    ],
+    "calm": [
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3",
+    ],
+    "mysterious": [
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3",
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3",
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
+    ],
+    "hopeful": [
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3",
+    ],
+    "intense": [
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
+    ],
+    "melancholic": [
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3",
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
+    ],
 }
-
-
 # ═══════════════════════════════════════════════════════
 #  IMAGES — picsum.photos (instant, always works)
 # ═══════════════════════════════════════════════════════
@@ -613,12 +640,131 @@ def main():
     st.markdown(f'<div class="ch-t">{data["title"]}</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="ch-s">{cur + 1} / {total}</div>', unsafe_allow_html=True)
 
-    # ── MUSIC ──
+       # ── MUSIC (ambient, auto-fade-in, auto-next, toggleable) ──
     if data["chain"]:
         mood = data["chain"][0].get("mood", "calm")
-        music_url = MUSIC_URLS.get(mood, MUSIC_URLS["calm"])
+        tracks = MUSIC.get(mood, MUSIC["calm"])
+        tracks_json = json.dumps(tracks)
+
         with st.expander(f"🎵 {t('music')} — {mood.upper()}", expanded=False):
-            st.audio(music_url, format="audio/mp3", loop=True)
+            import streamlit.components.v1 as components
+
+            components.html(f"""
+                <div id="music-box" style="
+                    font-family: 'Segoe UI', sans-serif;
+                    background: #111;
+                    border-radius: 12px;
+                    padding: 15px;
+                    color: #ccc;
+                ">
+                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                        <button id="toggleBtn" onclick="toggleMusic()" style="
+                            background: #e94560;
+                            border: none;
+                            color: white;
+                            width: 40px;
+                            height: 40px;
+                            border-radius: 50%;
+                            font-size: 18px;
+                            cursor: pointer;
+                        ">▶</button>
+
+                        <button onclick="nextTrack()" style="
+                            background: #222;
+                            border: 1px solid #333;
+                            color: #ccc;
+                            padding: 8px 16px;
+                            border-radius: 20px;
+                            cursor: pointer;
+                            font-size: 14px;
+                        ">⏭ Next</button>
+
+                        <div style="flex:1; display:flex; align-items:center; gap:8px;">
+                            <span style="font-size:12px;">🔈</span>
+                            <input type="range" id="volSlider" min="0" max="100" value="25"
+                                style="flex:1; accent-color:#e94560; height:4px;"
+                                oninput="setVolume(this.value)">
+                            <span style="font-size:12px;">🔊</span>
+                        </div>
+                    </div>
+
+                    <div id="trackInfo" style="font-size:11px; color:#555; text-align:center;">
+                        Track 1 / {len(tracks)}
+                    </div>
+                </div>
+
+                <script>
+                    var tracks = {tracks_json};
+                    var currentTrack = 0;
+                    var targetVolume = 0.25;
+                    var isPlaying = false;
+
+                    var audio = new Audio(tracks[0]);
+                    audio.volume = 0;
+
+                    // Auto-next when track ends
+                    audio.addEventListener('ended', function() {{
+                        nextTrack();
+                    }});
+
+                    function fadeIn() {{
+                        var vol = 0;
+                        var fadeInterval = setInterval(function() {{
+                            vol += 0.005;
+                            if (vol >= targetVolume) {{
+                                vol = targetVolume;
+                                clearInterval(fadeInterval);
+                            }}
+                            audio.volume = vol;
+                        }}, 100);
+                    }}
+
+                    function toggleMusic() {{
+                        var btn = document.getElementById('toggleBtn');
+                        if (isPlaying) {{
+                            audio.pause();
+                            btn.innerHTML = '▶';
+                            isPlaying = false;
+                        }} else {{
+                            audio.play();
+                            fadeIn();
+                            btn.innerHTML = '⏸';
+                            isPlaying = true;
+                        }}
+                    }}
+
+                    function nextTrack() {{
+                        currentTrack = (currentTrack + 1) % tracks.length;
+                        var wasPlaying = isPlaying;
+                        audio.src = tracks[currentTrack];
+                        document.getElementById('trackInfo').innerHTML =
+                            'Track ' + (currentTrack + 1) + ' / ' + tracks.length;
+                        if (wasPlaying) {{
+                            audio.volume = 0;
+                            audio.play();
+                            fadeIn();
+                        }}
+                    }}
+
+                    function setVolume(val) {{
+                        targetVolume = val / 100;
+                        if (isPlaying) {{
+                            audio.volume = targetVolume;
+                        }}
+                    }}
+
+                    // Auto-start with fade-in after 2 seconds
+                    setTimeout(function() {{
+                        audio.play().then(function() {{
+                            isPlaying = true;
+                            document.getElementById('toggleBtn').innerHTML = '⏸';
+                            fadeIn();
+                        }}).catch(function() {{
+                            // Browser blocked autoplay, user needs to click
+                        }});
+                    }}, 2000);
+                </script>
+            """, height=100)
 
     # ── CARDS ──
     chain = data["chain"]
