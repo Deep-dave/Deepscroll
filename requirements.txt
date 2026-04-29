@@ -1,0 +1,6 @@
+  streamlit==1.45.1
+   groq==0.25.0
+   PyMuPDF==1.25.5
+   requests==2.32.3
+   ebooklib==0.18.1
+   beautifulsoup4==4.13.4
