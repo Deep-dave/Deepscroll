@@ -33,9 +33,10 @@ TR = {
         "land_t": "Drop a book. Start scrolling.",
         "land_s": "Any PDF becomes a visual journey.",
         "music": "🎵 Music",
-        "music_on": "🔊 Music ON",
-        "music_off": "🔇 Music OFF",
-        "tap": "tap",
+        "music_on": "🔊",
+        "music_off": "🔇",
+        "tap": "tap to learn",
+        "close": "close",
         "what_means": "What it means",
         "example_label": "Example",
         "takeaway_label": "Takeaway",
@@ -55,9 +56,10 @@ TR = {
         "land_t": "Buch hochladen. Loscrollen.",
         "land_s": "Jedes PDF wird zur Reise.",
         "music": "🎵 Musik",
-        "music_on": "🔊 Musik AN",
-        "music_off": "🔇 Musik AUS",
-        "tap": "tippen",
+        "music_on": "🔊",
+        "music_off": "🔇",
+        "tap": "tippen zum Lernen",
+        "close": "schließen",
         "what_means": "Was es bedeutet",
         "example_label": "Beispiel",
         "takeaway_label": "Fazit",
@@ -77,9 +79,10 @@ TR = {
         "land_t": "Кинь книгу. Скроль.",
         "land_s": "Будь-який PDF стане подорожжю.",
         "music": "🎵 Музика",
-        "music_on": "🔊 Музика ВКЛ",
-        "music_off": "🔇 Музика ВИКЛ",
-        "tap": "тап",
+        "music_on": "🔊",
+        "music_off": "🔇",
+        "tap": "тап щоб вчитись",
+        "close": "закрити",
         "what_means": "Що це значить",
         "example_label": "Приклад",
         "takeaway_label": "Висновок",
@@ -99,9 +102,10 @@ TR = {
         "land_t": "Déposez un livre. Scrollez.",
         "land_s": "Chaque PDF devient un voyage.",
         "music": "🎵 Musique",
-        "music_on": "🔊 Musique ON",
-        "music_off": "🔇 Musique OFF",
-        "tap": "appuyez",
+        "music_on": "🔊",
+        "music_off": "🔇",
+        "tap": "appuyez pour apprendre",
+        "close": "fermer",
         "what_means": "Ce que ça veut dire",
         "example_label": "Exemple",
         "takeaway_label": "À retenir",
@@ -122,7 +126,7 @@ def t(key):
 st.set_page_config(page_title="DeepScroll", page_icon="🧠", layout="centered")
 
 # ═══════════════════════════════════════════════════════
-#  STYLES
+#  STYLES — minimal, cards are in iframes
 # ═══════════════════════════════════════════════════════
 
 st.markdown("""
@@ -134,15 +138,12 @@ st.markdown("""
         font-family: 'Space Grotesk', sans-serif;
     }
     #MainMenu, header, footer, .stDeployButton { display: none !important; }
-    .block-container { padding-top: 1rem !important; max-width: 480px !important; }
-
-    .conn {
-        text-align: center;
-        color: #e94560;
-        font-size: 22px;
-        margin: 6px 0;
-        opacity: 0.4;
+    .block-container {
+        padding-top: 0.5rem !important;
+        padding-bottom: 0 !important;
+        max-width: 480px !important;
     }
+
     .ch-t {
         color: #e94560;
         font-size: 1.6em;
@@ -154,7 +155,7 @@ st.markdown("""
         color: #444;
         text-align: center;
         font-size: 0.8em;
-        margin-bottom: 18px;
+        margin-bottom: 10px;
     }
     .land {
         text-align: center;
@@ -174,8 +175,18 @@ st.markdown("""
         font-family: 'Space Grotesk', sans-serif !important;
         font-weight: 600 !important;
     }
-    .stButton > button[kind="primary"]:hover {
-        background: #d63851 !important;
+
+    /* Remove iframe borders and gaps */
+    iframe {
+        border: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Remove gaps between elements */
+    .element-container {
+        margin: 0 !important;
+        padding: 0 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -241,14 +252,13 @@ MUSIC = {
 
 
 # ═══════════════════════════════════════════════════════
-#  IMAGES — stable seed that never changes
+#  IMAGES — stable seed
 # ═══════════════════════════════════════════════════════
 
 def get_image_url(prompt, idx=0):
-    """Generate a stable image URL that won't change between reruns."""
     stable_string = f"{prompt}_{idx}"
     seed = int(hashlib.md5(stable_string.encode()).hexdigest()[:8], 16) % 100000
-    return f"https://picsum.photos/seed/{seed}/800/600"
+    return f"https://picsum.photos/seed/{seed}/800/800"
 
 
 # ═══════════════════════════════════════════════════════
@@ -343,25 +353,24 @@ def make_chain(chapter_text):
 
 Each card has 4 parts:
 1. hook: Short punchy sentence (MAX 12 words). Makes reader curious.
-2. meaning: What the author ACTUALLY means. 1-2 simple sentences. Faithful to the chapter.
-3. example: One CONCRETE example from the book, history, or real life. 1 sentence.
-4. takeaway: One short conclusion or lesson. 1 sentence.
+2. meaning: What the author ACTUALLY means. 1-2 simple sentences.
+3. example: One CONCRETE example. 1 sentence.
+4. takeaway: One short conclusion. 1 sentence.
 
-CRITICAL RULES:
+RULES:
 - Do NOT write vague motivational quotes
-- Do NOT write generic philosophy
-- EXPLAIN the actual ideas from THIS specific chapter
+- EXPLAIN actual ideas from THIS chapter
 - Generate exactly 5 cards
-- visual: 2-3 English words for a landscape/nature photo
-- mood: one of: dark, epic, calm, mysterious, hopeful, intense, melancholic
+- visual: 2-3 English words for a photo
+- mood: dark, epic, calm, mysterious, hopeful, intense, melancholic
 - {ai_lang}
 
-Return ONLY a JSON array:
-[{{"hook":"short headline","meaning":"clear explanation","example":"specific example","takeaway":"lesson learned","visual":"photo keywords","mood":"calm"}}]"""
+Return ONLY JSON array:
+[{{"hook":"headline","meaning":"explanation","example":"example","takeaway":"lesson","visual":"keywords","mood":"calm"}}]"""
                 },
                 {
                     "role": "user",
-                    "content": f"Summarize this chapter into idea cards:\n\n{chapter_text[:3000]}"
+                    "content": f"Summarize this chapter:\n\n{chapter_text[:3000]}"
                 }
             ],
             model=AI_MODEL,
@@ -370,8 +379,8 @@ Return ONLY a JSON array:
         )
         return parse_json(r.choices[0].message.content.strip())
     except Exception as e:
-        st.warning(f"⚠️ AI error: {e}")
-        return [{"hook": "Error. Refresh.", "meaning": "", "example": "", "takeaway": "", "visual": "abstract", "mood": "calm"}]
+        st.warning(f"⚠️ {e}")
+        return [{"hook": "Error.", "meaning": "", "example": "", "takeaway": "", "visual": "abstract", "mood": "calm"}]
 
 
 def make_title(chapter_text):
@@ -382,7 +391,7 @@ def make_title(chapter_text):
         r = client.chat.completions.create(
             messages=[{
                 "role": "user",
-                "content": f"Poetic title, 2-4 words. {ai_lang} Return ONLY the title:\n\n{chapter_text[:1500]}"
+                "content": f"Poetic title, 2-4 words. {ai_lang} ONLY the title:\n\n{chapter_text[:1500]}"
             }],
             model=AI_MODEL,
             temperature=0.9,
@@ -480,49 +489,50 @@ def download_book(url):
         text = text.strip()
         return text if len(text) > 100 else ""
     except Exception as e:
-        st.error(f"❌ Download failed: {e}")
+        st.error(f"❌ {e}")
         return ""
 
 
 # ═══════════════════════════════════════════════════════
-#  CARD COMPONENT — self-contained HTML with animation
+#  FULLSCREEN CARD — TikTok style
 # ═══════════════════════════════════════════════════════
 
 def render_card(hook, meaning, example, takeaway, mood, img_url,
-                index, total, tap_text, lbl_meaning, lbl_example, lbl_takeaway):
+                index, total, tap_text, close_text,
+                lbl_meaning, lbl_example, lbl_takeaway):
 
     def esc(s):
-        return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;").replace("'", "&#39;").replace("\n", " ")
+        return (s.replace("&", "&amp;").replace("<", "&lt;")
+                 .replace(">", "&gt;").replace('"', "&quot;")
+                 .replace("'", "&#39;").replace("\n", " "))
 
-    hook_safe = esc(hook)
-    meaning_safe = esc(meaning)
-    example_safe = esc(example)
-    takeaway_safe = esc(takeaway)
+    h = esc(hook)
+    m = esc(meaning)
+    ex = esc(example)
+    tk = esc(takeaway)
 
-    has_content = bool(meaning or example or takeaway)
+    has = bool(meaning or example or takeaway)
 
-    explain_sections = ""
+    sections = ""
     if meaning:
-        explain_sections += f'<div class="ex-sec"><div class="ex-lbl">📖 {lbl_meaning}</div><div class="ex-txt">{meaning_safe}</div></div>'
+        sections += f'<div class="s"><div class="sl">📖 {lbl_meaning}</div><div class="st">{m}</div></div>'
     if example:
-        explain_sections += f'<div class="ex-sec"><div class="ex-lbl">💡 {lbl_example}</div><div class="ex-txt">{example_safe}</div></div>'
+        sections += f'<div class="s"><div class="sl">💡 {lbl_example}</div><div class="st">{ex}</div></div>'
     if takeaway:
-        explain_sections += f'<div class="ex-sec"><div class="ex-lbl">🔑 {lbl_takeaway}</div><div class="ex-txt">{takeaway_safe}</div></div>'
+        sections += f'<div class="s"><div class="sl">🔑 {lbl_takeaway}</div><div class="st">{tk}</div></div>'
 
-    tap_section = ""
-    if has_content:
-        tap_section = f"""
-            <div class="tap-bar" id="tapBar" onclick="toggle()">
-                <span id="tapLabel">{tap_text} ▾</span>
-            </div>
-            <div class="explain" id="exBox">
-                {explain_sections}
+    overlay = ""
+    if has:
+        overlay = f"""
+            <div class="overlay" id="ov" onclick="cl(event)">
+                <div class="panel" onclick="event.stopPropagation()">
+                    {sections}
+                    <div class="close-btn" onclick="cl(event)">{close_text} ✕</div>
+                </div>
             </div>
         """
 
-    # Calculate heights
-    closed_height = 370
-    open_height = 700
+    click = 'onclick="op()"' if has else ''
 
     html = f"""
     <html>
@@ -530,128 +540,181 @@ def render_card(hook, meaning, example, takeaway, mood, img_url,
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         *{{margin:0;padding:0;box-sizing:border-box;}}
-        body{{background:transparent;font-family:'Space Grotesk',sans-serif;}}
-
-        .wrap{{width:100%;}}
-
-        .hero{{
-            position:relative;
-            border-radius:22px 22px 4px 4px;
+        body{{
+            background:#050505;
+            font-family:'Space Grotesk',sans-serif;
             overflow:hidden;
-            height:320px;
-            display:flex;
-            align-items:flex-end;
-            cursor:{('pointer' if has_content else 'default')};
         }}
-        .hero-bg{{
+
+        .card{{
+            position:relative;
+            width:100%;
+            height:85vh;
+            max-height:600px;
+            border-radius:20px;
+            overflow:hidden;
+            cursor:pointer;
+        }}
+
+        .bg{{
             position:absolute;top:0;left:0;
             width:100%;height:100%;
-            object-fit:cover;z-index:1;background:#111;
+            object-fit:cover;z-index:1;
+            background:#111;
         }}
-        .hero-grd{{
+
+        .grad{{
             position:absolute;top:0;left:0;
             width:100%;height:100%;
-            background:linear-gradient(to bottom,
-                rgba(0,0,0,0.05) 0%,
-                rgba(0,0,0,0.4) 50%,
-                rgba(0,0,0,0.92) 100%);
+            background:linear-gradient(
+                to bottom,
+                rgba(0,0,0,0) 0%,
+                rgba(0,0,0,0.3) 40%,
+                rgba(0,0,0,0.85) 75%,
+                rgba(0,0,0,0.95) 100%
+            );
             z-index:2;
         }}
-        .hero-body{{
-            position:relative;z-index:3;
-            padding:25px;width:100%;
+
+        .body{{
+            position:absolute;
+            bottom:0;left:0;right:0;
+            z-index:3;
+            padding:30px 25px;
         }}
-        .hero-txt{{
-            color:#fff;font-size:1.45em;font-weight:700;
-            line-height:1.4;
-            text-shadow:0 2px 12px rgba(0,0,0,0.8);
+
+        .hook{{
+            color:#fff;
+            font-size:1.6em;
+            font-weight:700;
+            line-height:1.35;
+            text-shadow:0 2px 15px rgba(0,0,0,0.9);
+            margin-bottom:15px;
         }}
-        .hero-ft{{
-            color:rgba(255,255,255,0.4);font-size:0.75em;
-            margin-top:10px;display:flex;
-            justify-content:space-between;align-items:center;
+
+        .foot{{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            color:rgba(255,255,255,0.4);
+            font-size:0.8em;
         }}
+
         .mood{{
-            background:rgba(233,69,96,0.25);color:#e94560;
-            padding:2px 10px;border-radius:20px;font-weight:600;
+            background:rgba(233,69,96,0.3);
+            color:#e94560;
+            padding:3px 12px;
+            border-radius:20px;
+            font-weight:600;
+            font-size:0.85em;
         }}
 
-        .tap-bar{{
-            background:#0d1117;border:1px solid #1a2332;
-            border-top:none;padding:10px;text-align:center;
-            cursor:pointer;transition:all 0.3s;
-        }}
-        .tap-bar:hover{{background:#161b22;border-color:#e94560;}}
-        .tap-bar span{{
-            color:#e94560;font-size:0.85em;font-weight:600;
+        .tap{{
+            color:rgba(255,255,255,0.35);
+            font-size:0.8em;
             letter-spacing:0.5px;
+            animation:pulse 2s ease-in-out infinite;
         }}
 
-        .explain{{
-            max-height:0;overflow:hidden;
-            transition:max-height 0.5s ease,padding 0.5s ease,opacity 0.4s ease;
+        @keyframes pulse{{
+            0%,100%{{opacity:0.35;}}
+            50%{{opacity:0.7;}}
+        }}
+
+        /* ── OVERLAY ── */
+        .overlay{{
+            position:absolute;
+            top:0;left:0;
+            width:100%;height:100%;
+            background:rgba(0,0,0,0.75);
+            z-index:10;
+            display:flex;
+            align-items:center;
+            justify-content:center;
             opacity:0;
-            background:linear-gradient(145deg,#0d1117,#161b22);
-            border:1px solid #1a2332;border-top:none;
-            border-radius:0 0 22px 22px;
-            padding:0 25px;
+            visibility:hidden;
+            transition:opacity 0.35s ease, visibility 0.35s ease;
+            backdrop-filter:blur(8px);
+            -webkit-backdrop-filter:blur(8px);
         }}
-        .explain.open{{
-            max-height:350px;opacity:1;padding:22px 25px;
-            overflow-y:auto;
+        .overlay.show{{
+            opacity:1;
+            visibility:visible;
         }}
 
-        .ex-sec{{margin-bottom:14px;}}
-        .ex-sec:last-child{{margin-bottom:0;}}
-        .ex-lbl{{
+        .panel{{
+            background:linear-gradient(145deg,#12151a,#1a1f2e);
+            border:1px solid rgba(233,69,96,0.2);
+            border-radius:20px;
+            padding:25px;
+            width:88%;
+            max-height:80%;
+            overflow-y:auto;
+            transform:translateY(30px) scale(0.95);
+            transition:transform 0.4s ease;
+        }}
+        .overlay.show .panel{{
+            transform:translateY(0) scale(1);
+        }}
+
+        .panel::-webkit-scrollbar{{width:3px;}}
+        .panel::-webkit-scrollbar-track{{background:transparent;}}
+        .panel::-webkit-scrollbar-thumb{{background:#e94560;border-radius:3px;}}
+
+        .s{{margin-bottom:18px;}}
+        .s:last-of-type{{margin-bottom:12px;}}
+        .sl{{
             color:#e94560;font-size:0.7em;font-weight:700;
             text-transform:uppercase;letter-spacing:1.5px;
-            margin-bottom:4px;
+            margin-bottom:6px;
         }}
-        .ex-txt{{color:#c8c8c8;font-size:0.93em;line-height:1.6;}}
+        .st{{
+            color:#d0d0d0;font-size:0.95em;line-height:1.65;
+        }}
 
-        .explain::-webkit-scrollbar{{width:4px;}}
-        .explain::-webkit-scrollbar-track{{background:#0d1117;}}
-        .explain::-webkit-scrollbar-thumb{{background:#e94560;border-radius:4px;}}
+        .close-btn{{
+            text-align:center;
+            color:rgba(255,255,255,0.3);
+            font-size:0.8em;
+            padding:8px;
+            cursor:pointer;
+            transition:color 0.2s;
+            margin-top:5px;
+        }}
+        .close-btn:hover{{color:#e94560;}}
     </style>
     </head>
     <body>
-        <div class="wrap">
-            <div class="hero" onclick="toggle()">
-                <img class="hero-bg" src="{img_url}" loading="lazy"
-                     onerror="this.src='https://picsum.photos/seed/fb{index}/800/600'">
-                <div class="hero-grd"></div>
-                <div class="hero-body">
-                    <div class="hero-txt">{hook_safe}</div>
-                    <div class="hero-ft">
-                        <span class="mood">{mood}</span>
-                        <span>{index + 1}/{total}</span>
-                    </div>
+        <div class="card" {click}>
+            <img class="bg" src="{img_url}" loading="lazy"
+                 onerror="this.src='https://picsum.photos/seed/fb{index}/800/800'">
+            <div class="grad"></div>
+            <div class="body">
+                <div class="hook">{h}</div>
+                <div class="foot">
+                    <span class="mood">{mood}</span>
+                    <span>{index+1}/{total}</span>
+                    {'<span class="tap">▲ '+tap_text+'</span>' if has else ''}
                 </div>
             </div>
-            {tap_section}
+            {overlay}
         </div>
         <script>
-            var open=false;
-            function toggle(){{
-                var box=document.getElementById('exBox');
-                var lbl=document.getElementById('tapLabel');
-                if(!box||!lbl)return;
-                open=!open;
-                if(open){{
-                    box.classList.add('open');
-                    lbl.innerHTML='▴ close';
-                }}else{{
-                    box.classList.remove('open');
-                    lbl.innerHTML='{tap_text} ▾';
-                }}
+            function op(){{
+                var o=document.getElementById('ov');
+                if(o)o.classList.add('show');
+            }}
+            function cl(e){{
+                e.stopPropagation();
+                var o=document.getElementById('ov');
+                if(o)o.classList.remove('show');
             }}
         </script>
     </body>
     </html>
     """
 
-    components.html(html, height=open_height, scrolling=False)
+    components.html(html, height=620, scrolling=False)
 
 
 # ═══════════════════════════════════════════════════════
@@ -677,27 +740,26 @@ def main():
     )
     st.markdown(
         f"<p style='text-align:center;color:#444;font-size:0.85em;"
-        f"margin:4px 0 12px;'>{t('sub')}</p>",
+        f"margin:4px 0 8px;'>{t('sub')}</p>",
         unsafe_allow_html=True,
     )
 
-    # ── LANGUAGE + MUSIC TOGGLE ──
-    top_cols = st.columns([1, 1, 1, 1, 1.5])
-
+    # ── LANGUAGE + MUSIC ──
+    top = st.columns([1, 1, 1, 1, 1])
     for i, (code, flag) in enumerate([("EN", "🇬🇧"), ("DE", "🇩🇪"), ("UA", "🇺🇦"), ("FR", "🇫🇷")]):
-        with top_cols[i]:
-            label = f"✓ {flag}" if code == st.session_state["lang"] else flag
-            if st.button(label, key=f"lang_{code}", use_container_width=True):
+        with top[i]:
+            label = f"✓{flag}" if code == st.session_state["lang"] else flag
+            if st.button(label, key=f"l_{code}", use_container_width=True):
                 if code != st.session_state["lang"]:
                     st.session_state["lang"] = code
                     st.session_state["chains"] = {}
                     st.rerun()
 
-    with top_cols[4]:
-        music_on = st.session_state["music_enabled"]
-        music_label = t("music_on") if music_on else t("music_off")
-        if st.button(music_label, key="music_toggle", use_container_width=True):
-            st.session_state["music_enabled"] = not music_on
+    with top[4]:
+        m_on = st.session_state["music_enabled"]
+        if st.button(t("music_on") if m_on else t("music_off"),
+                     key="mus", use_container_width=True):
+            st.session_state["music_enabled"] = not m_on
             st.rerun()
 
     st.markdown("---")
@@ -707,12 +769,12 @@ def main():
     book_ready = False
 
     with tab1:
-        uploaded = st.file_uploader("Upload", type=["pdf"], label_visibility="collapsed")
+        uploaded = st.file_uploader("U", type=["pdf"], label_visibility="collapsed")
         if uploaded:
-            file_id = f"{uploaded.name}_{uploaded.size}"
-            if st.session_state.get("file_id") != file_id:
+            fid = f"{uploaded.name}_{uploaded.size}"
+            if st.session_state.get("file_id") != fid:
                 st.session_state["pdf_bytes"] = uploaded.read()
-                st.session_state["file_id"] = file_id
+                st.session_state["file_id"] = fid
                 for k in ["chapters", "chains", "current_chapter", "raw_text"]:
                     st.session_state.pop(k, None)
                 st.session_state["chains"] = {}
@@ -720,7 +782,7 @@ def main():
             book_ready = True
 
     with tab2:
-        sel = st.selectbox("Pick", list(BOOKS.keys()), label_visibility="collapsed")
+        sel = st.selectbox("P", list(BOOKS.keys()), label_visibility="collapsed")
         if st.button(t("load"), use_container_width=True):
             with st.spinner(t("reading")):
                 txt = download_book(BOOKS[sel])
@@ -771,7 +833,6 @@ def main():
         cur = total - 1
         st.session_state["current_chapter"] = cur
 
-    # Navigation
     c1, c2, c3 = st.columns([1, 2, 1])
     with c1:
         if cur > 0 and st.button("⬅️", key="prev", use_container_width=True):
@@ -780,7 +841,7 @@ def main():
     with c2:
         st.markdown(
             f"<p style='text-align:center;color:#555;margin-top:8px;'>"
-            f"{cur + 1} / {total}</p>",
+            f"{cur+1}/{total}</p>",
             unsafe_allow_html=True,
         )
     with c3:
@@ -788,107 +849,74 @@ def main():
             st.session_state["current_chapter"] = cur + 1
             st.rerun()
 
-    # Generate chain
     chains = st.session_state["chains"]
     if cur not in chains:
         with st.spinner(t("building")):
-            ch_text = chapters[cur]
-            title = make_title(ch_text)
-            chain = make_chain(ch_text)
+            ch = chapters[cur]
+            title = make_title(ch)
+            chain = make_chain(ch)
             chains[cur] = {"title": title, "chain": chain}
             st.session_state["chains"] = chains
 
     data = chains[cur]
 
-    # Title
     st.markdown(f'<div class="ch-t">{data["title"]}</div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="ch-s">{cur + 1} / {total}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="ch-s">{cur+1}/{total}</div>', unsafe_allow_html=True)
 
-    # ── MUSIC (only if enabled) ──
+    # ── MUSIC ──
     if st.session_state["music_enabled"] and data["chain"]:
         mood = data["chain"][0].get("mood", "calm")
         tracks = MUSIC.get(mood, MUSIC["calm"])
-        tracks_json = json.dumps(tracks)
+        tj = json.dumps(tracks)
 
         with st.expander(f"🎵 {t('music')} — {mood.upper()}", expanded=False):
             components.html(f"""
-                <div style="
-                    font-family:'Segoe UI',sans-serif;
-                    background:#111;border-radius:12px;
-                    padding:15px;color:#ccc;">
+                <div style="font-family:sans-serif;background:#111;border-radius:12px;padding:15px;color:#ccc;">
                     <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-                        <button id="tBtn" onclick="tog()" style="
-                            background:#e94560;border:none;color:white;
-                            width:40px;height:40px;border-radius:50%;
-                            font-size:18px;cursor:pointer;">▶</button>
-                        <button onclick="nxt()" style="
-                            background:#222;border:1px solid #333;color:#ccc;
-                            padding:8px 16px;border-radius:20px;
-                            cursor:pointer;font-size:14px;">⏭ Next</button>
+                        <button id="tb" onclick="tog()" style="background:#e94560;border:none;color:white;width:40px;height:40px;border-radius:50%;font-size:18px;cursor:pointer;">▶</button>
+                        <button onclick="nxt()" style="background:#222;border:1px solid #333;color:#ccc;padding:8px 16px;border-radius:20px;cursor:pointer;font-size:14px;">⏭</button>
                         <div style="flex:1;display:flex;align-items:center;gap:8px;">
                             <span style="font-size:12px;">🔈</span>
-                            <input type="range" min="0" max="100" value="25"
-                                style="flex:1;accent-color:#e94560;height:4px;"
-                                oninput="sv(this.value)">
+                            <input type="range" min="0" max="100" value="25" style="flex:1;accent-color:#e94560;" oninput="sv(this.value)">
                             <span style="font-size:12px;">🔊</span>
                         </div>
                     </div>
-                    <div id="tI" style="font-size:11px;color:#555;text-align:center;">
-                        Track 1 / {len(tracks)}</div>
+                    <div id="ti" style="font-size:11px;color:#555;text-align:center;">Track 1/{len(tracks)}</div>
                 </div>
                 <script>
-                    var t={tracks_json},c=0,tv=0.25,ip=false;
-                    var a=new Audio(t[0]);a.volume=0;
+                    var t={tj},c=0,tv=0.25,ip=false,a=new Audio(t[0]);a.volume=0;
                     a.addEventListener('ended',function(){{nxt();}});
-                    function fi(){{var v=0;var i=setInterval(function(){{
-                        v+=0.005;if(v>=tv){{v=tv;clearInterval(i);}}a.volume=v;}},100);}}
-                    function tog(){{var b=document.getElementById('tBtn');
-                        if(ip){{a.pause();b.innerHTML='▶';ip=false;}}
-                        else{{a.play();fi();b.innerHTML='⏸';ip=true;}}}}
-                    function nxt(){{c=(c+1)%t.length;var w=ip;
-                        a.src=t[c];document.getElementById('tI').innerHTML=
-                        'Track '+(c+1)+' / '+t.length;
-                        if(w){{a.volume=0;a.play();fi();}}}}
-                    function sv(v){{tv=v/100;if(ip){{a.volume=tv;}}}}
-                    setTimeout(function(){{a.play().then(function(){{
-                        ip=true;document.getElementById('tBtn').innerHTML='⏸';
-                        fi();}}).catch(function(){{}});}},2000);
+                    function fi(){{var v=0;var i=setInterval(function(){{v+=0.005;if(v>=tv){{v=tv;clearInterval(i);}}a.volume=v;}},100);}}
+                    function tog(){{var b=document.getElementById('tb');if(ip){{a.pause();b.innerHTML='▶';ip=false;}}else{{a.play();fi();b.innerHTML='⏸';ip=true;}}}}
+                    function nxt(){{c=(c+1)%t.length;var w=ip;a.src=t[c];document.getElementById('ti').innerHTML='Track '+(c+1)+'/'+t.length;if(w){{a.volume=0;a.play();fi();}}}}
+                    function sv(v){{tv=v/100;if(ip)a.volume=tv;}}
+                    setTimeout(function(){{a.play().then(function(){{ip=true;document.getElementById('tb').innerHTML='⏸';fi();}}).catch(function(){{}});}},2000);
                 </script>
             """, height=100)
 
     # ── CARDS ──
     chain = data["chain"]
     for i, node in enumerate(chain):
-        hook = node.get("hook", node.get("idea", "..."))
-        meaning = node.get("meaning", "")
-        example = node.get("example", "")
-        takeaway = node.get("takeaway", "")
-        visual = node.get("visual", "abstract")
-        mood = node.get("mood", "calm")
-        img = get_image_url(visual, idx=cur * 100 + i)
-
         render_card(
-            hook=hook,
-            meaning=meaning,
-            example=example,
-            takeaway=takeaway,
-            mood=mood,
-            img_url=img,
+            hook=node.get("hook", node.get("idea", "...")),
+            meaning=node.get("meaning", ""),
+            example=node.get("example", ""),
+            takeaway=node.get("takeaway", ""),
+            mood=node.get("mood", "calm"),
+            img_url=get_image_url(node.get("visual", "abstract"), idx=cur * 100 + i),
             index=i,
             total=len(chain),
             tap_text=t("tap"),
+            close_text=t("close"),
             lbl_meaning=t("what_means"),
             lbl_example=t("example_label"),
             lbl_takeaway=t("takeaway_label"),
         )
 
-        if i < len(chain) - 1:
-            st.markdown('<div class="conn">⟱</div>', unsafe_allow_html=True)
-
     # ── END ──
     st.markdown("---")
     if cur < total - 1:
-        if st.button(t("next_ch"), use_container_width=True, type="primary", key="next_ch"):
+        if st.button(t("next_ch"), use_container_width=True, type="primary", key="nc"):
             st.session_state["current_chapter"] = cur + 1
             st.rerun()
     else:
@@ -898,7 +926,7 @@ def main():
                 <p style="color:#555;">{t('done_sub')}</p>
             </div>
         """, unsafe_allow_html=True)
-        if st.button(t("reset"), use_container_width=True, key="reset_btn"):
+        if st.button(t("reset"), use_container_width=True, key="rs"):
             for k in list(st.session_state.keys()):
                 del st.session_state[k]
             st.rerun()
