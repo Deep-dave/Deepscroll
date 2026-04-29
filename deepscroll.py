@@ -11,7 +11,7 @@ from groq import Groq
 #  CONFIGURATION
 # ═══════════════════════════════════════════════════════
 
-GROQ_API_KEY = st.secrets["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"]     # Get from console.groq.com
+GROQ_API_KEY = st.secrets["GROQ_API_KEY"]  # Get from console.groq.com
 AI_MODEL = "llama-3.3-70b-versatile"
 
 # ═══════════════════════════════════════════════════════
