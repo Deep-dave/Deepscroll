@@ -22,60 +22,64 @@ TR = {
         "upload": "📁 Upload PDF",
         "classics": "📚 Classics",
         "load": "📖 Load",
-        "reading": "Reading...",
-        "building": "🧠 Building...",
-        "next_ch": "Next →",
+        "reading": "📚 Reading the book...",
+        "building": "🧠 Building idea chain...",
+        "next_ch": "Next Chapter →",
         "done": "🎉 Done!",
         "done_sub": "Drop another book.",
         "reset": "🔄 New Book",
         "land_t": "Drop a book. Start scrolling.",
         "land_s": "Any PDF becomes a visual journey.",
-        "ai": "Write each idea in MAX 12 words in English. Be punchy like a headline.",
+        "music": "🎵 Music",
+        "ai": "Write each idea in MAX 12 words in English. Short like a billboard.",
     },
     "DE": {
-        "sub": "Scrolle Wissen. Überspringe den Lärm.",
+        "sub": "Scrolle Wissen. Kein Lärm.",
         "upload": "📁 PDF laden",
         "classics": "📚 Klassiker",
         "load": "📖 Laden",
-        "reading": "Liest...",
-        "building": "🧠 Baut...",
+        "reading": "📚 Liest...",
+        "building": "🧠 Baut Ideenkette...",
         "next_ch": "Weiter →",
         "done": "🎉 Fertig!",
         "done_sub": "Lade ein neues Buch.",
         "reset": "🔄 Neues Buch",
         "land_t": "Buch hochladen. Loscrollen.",
-        "land_s": "Jedes PDF wird zur visuellen Reise.",
-        "ai": "Write each idea in MAX 12 words in German. Be punchy like a headline.",
+        "land_s": "Jedes PDF wird zur Reise.",
+        "music": "🎵 Musik",
+        "ai": "Write each idea in MAX 12 words in German. Short like a billboard.",
     },
     "UA": {
-        "sub": "Скроль мудрість. Пропускай шум.",
+        "sub": "Скроль мудрість. Без шуму.",
         "upload": "📁 PDF",
         "classics": "📚 Класика",
         "load": "📖 Читати",
-        "reading": "Читаю...",
-        "building": "🧠 Будую...",
+        "reading": "📚 Читаю книгу...",
+        "building": "🧠 Будую ланцюг ідей...",
         "next_ch": "Далі →",
         "done": "🎉 Готово!",
         "done_sub": "Кинь нову книгу.",
         "reset": "🔄 Нова книга",
         "land_t": "Кинь книгу. Скроль.",
         "land_s": "Будь-який PDF стане подорожжю.",
-        "ai": "Write each idea in MAX 12 words in Ukrainian. Be punchy like a headline.",
+        "music": "🎵 Музика",
+        "ai": "Write each idea in MAX 12 words in Ukrainian. Short like a billboard.",
     },
     "FR": {
-        "sub": "Scrollez le savoir. Ignorez le bruit.",
+        "sub": "Scrollez le savoir. Zéro bruit.",
         "upload": "📁 PDF",
         "classics": "📚 Classiques",
         "load": "📖 Charger",
-        "reading": "Lecture...",
+        "reading": "📚 Lecture...",
         "building": "🧠 Construction...",
         "next_ch": "Suivant →",
         "done": "🎉 Terminé !",
         "done_sub": "Chargez un autre livre.",
-        "reset": "🔄 Nouveau livre",
+        "reset": "🔄 Nouveau",
         "land_t": "Déposez un livre. Scrollez.",
-        "land_s": "Chaque PDF devient un voyage visuel.",
-        "ai": "Write each idea in MAX 12 words in French. Be punchy like a headline.",
+        "land_s": "Chaque PDF devient un voyage.",
+        "music": "🎵 Musique",
+        "ai": "Write each idea in MAX 12 words in French. Short like a billboard.",
     },
 }
 
@@ -92,7 +96,7 @@ def t(key):
 st.set_page_config(page_title="DeepScroll", page_icon="🧠", layout="centered")
 
 # ═══════════════════════════════════════════════════════
-#  STYLES
+#  STYLES (no JS, only CSS)
 # ═══════════════════════════════════════════════════════
 
 st.markdown("""
@@ -103,7 +107,7 @@ st.markdown("""
         background-color: #050505;
         font-family: 'Space Grotesk', sans-serif;
     }
-    #MainMenu, header, footer, .stDeployButton { visibility: hidden; display: none; }
+    #MainMenu, header, footer, .stDeployButton { display: none !important; }
     .block-container { padding-top: 1rem !important; max-width: 480px !important; }
 
     /* ── HERO CARD ── */
@@ -170,118 +174,12 @@ st.markdown("""
         to   { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    /* ── CONNECTOR ── */
     .conn { text-align: center; color: #e94560; font-size: 22px; margin: 3px 0; opacity: 0.4; }
-
-    /* ── CHAPTER ── */
     .ch-t { color: #e94560; font-size: 1.6em; font-weight: 700; text-align: center; margin: 12px 0 3px; }
     .ch-s { color: #444; text-align: center; font-size: 0.8em; margin-bottom: 18px; }
-
-    /* ── LANDING ── */
     .land { text-align: center; padding: 70px 20px; }
     .land h2 { color: #ccc; font-weight: 700; }
     .land p { color: #555; }
-
-    /* ── MUSIC BUTTON (floating circle) ── */
-    .music-toggle {
-        position: fixed;
-        bottom: 25px;
-        right: 25px;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background: #e94560;
-        border: none;
-        color: white;
-        font-size: 22px;
-        cursor: pointer;
-        z-index: 9999;
-        box-shadow: 0 4px 20px rgba(233,69,96,0.5);
-        transition: transform 0.2s, box-shadow 0.2s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .music-toggle:hover {
-        transform: scale(1.1);
-        box-shadow: 0 6px 30px rgba(233,69,96,0.7);
-    }
-
-    /* ── MUSIC PANEL (popup) ── */
-    .music-panel {
-        position: fixed;
-        bottom: 85px;
-        right: 25px;
-        background: #111;
-        border: 1px solid #333;
-        border-radius: 16px;
-        padding: 18px;
-        z-index: 9999;
-        width: 220px;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-        display: none;
-        animation: fadeUp 0.3s ease-out;
-    }
-    .music-panel.open { display: block; }
-
-    .music-panel-title {
-        color: #e94560;
-        font-size: 0.85em;
-        font-weight: 700;
-        margin-bottom: 12px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .music-panel-close {
-        background: none;
-        border: none;
-        color: #666;
-        font-size: 18px;
-        cursor: pointer;
-    }
-    .music-panel-close:hover { color: #e94560; }
-
-    .music-btn {
-        background: #1a1a1a;
-        border: 1px solid #333;
-        color: #ccc;
-        width: 100%;
-        padding: 8px;
-        border-radius: 10px;
-        font-size: 16px;
-        cursor: pointer;
-        margin-bottom: 8px;
-        font-family: 'Space Grotesk', sans-serif;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-    }
-    .music-btn:hover { border-color: #e94560; color: #e94560; }
-
-    .vol-row {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        color: #666;
-        font-size: 14px;
-        margin-top: 4px;
-    }
-    .vol-row input[type="range"] {
-        flex: 1;
-        accent-color: #e94560;
-        height: 4px;
-    }
-
-    @keyframes fadeUp {
-        from { opacity: 0; transform: translateY(10px); }
-        to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ── SPACER ── */
-    .spacer { height: 100px; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -301,115 +199,145 @@ def get_groq():
 
 client = get_groq()
 
+
 # ═══════════════════════════════════════════════════════
-#  MUSIC TRACKS (tested & working)
+#  MUSIC — Download and serve via Streamlit natively
 # ═══════════════════════════════════════════════════════
 
-TRACKS = {
-    "dark": [
-        "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Kevin_MacLeod/Oddities/Kevin_MacLeod_-_Cryptic_Sorrow.mp3",
-        "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/ccCommunity/Chad_Crouch/Arps/Chad_Crouch_-_Dusk.mp3",
-    ],
-    "epic": [
-        "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Kevin_MacLeod/Themes/Kevin_MacLeod_-_Impact_Prelude.mp3",
-        "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/ccCommunity/Chad_Crouch/Arps/Chad_Crouch_-_Algorithms.mp3",
-    ],
-    "calm": [
-        "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/ccCommunity/Chad_Crouch/Arps/Chad_Crouch_-_Shipping_Lanes.mp3",
-        "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Lobo_Loco/Stimmungen/Lobo_Loco_-_05_-_Ambient_North.mp3",
-    ],
-    "mysterious": [
-        "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Kevin_MacLeod/Oddities/Kevin_MacLeod_-_Cryptic_Sorrow.mp3",
-        "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/ccCommunity/Chad_Crouch/Arps/Chad_Crouch_-_Dusk.mp3",
-    ],
-    "hopeful": [
-        "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/ccCommunity/Chad_Crouch/Arps/Chad_Crouch_-_Shipping_Lanes.mp3",
-        "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/ccCommunity/Chad_Crouch/Arps/Chad_Crouch_-_Algorithms.mp3",
-    ],
-    "intense": [
-        "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Kevin_MacLeod/Themes/Kevin_MacLeod_-_Impact_Prelude.mp3",
-        "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/ccCommunity/Chad_Crouch/Arps/Chad_Crouch_-_Algorithms.mp3",
-    ],
-    "melancholic": [
-        "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/ccCommunity/Chad_Crouch/Arps/Chad_Crouch_-_Dusk.mp3",
-        "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/ccCommunity/Chad_Crouch/Arps/Chad_Crouch_-_Shipping_Lanes.mp3",
-    ],
+# These are direct .mp3 URLs that allow hotlinking
+MUSIC_URLS = {
+    "dark": "https://upload.wikimedia.org/wikipedia/commons/4/47/Pista_de_audio.ogg",
+    "epic": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Microtonal_music.ogg",
+    "calm": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Threnody_for_the_Victims_of_Hiroshima_%28excerpt%29.ogg",
+    "mysterious": "https://upload.wikimedia.org/wikipedia/commons/4/47/Pista_de_audio.ogg",
+    "hopeful": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Microtonal_music.ogg",
+    "intense": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Microtonal_music.ogg",
+    "melancholic": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Threnody_for_the_Victims_of_Hiroshima_%28excerpt%29.ogg",
 }
 
 
-def get_tracks(mood):
-    return TRACKS.get(mood.lower().strip(), TRACKS["calm"])
+@st.cache_data(ttl=3600)
+def download_music(url):
+    """Download music file and return bytes for st.audio()."""
+    try:
+        r = requests.get(url, timeout=20)
+        r.raise_for_status()
+        return r.content
+    except Exception:
+        return None
 
 
 # ═══════════════════════════════════════════════════════
-#  IMAGES — picsum.photos (instant, always works)
+#  IMAGES — picsum.photos (instant)
 # ═══════════════════════════════════════════════════════
 
 def get_image_url(prompt, idx=0):
-    """
-    picsum.photos gives random beautiful photos instantly.
-    We use the seed parameter to get consistent but different images.
-    """
-    seed = hash(prompt + str(idx)) % 100000
+    seed = abs(hash(prompt + str(idx))) % 100000
     return f"https://picsum.photos/seed/{seed}/800/600"
 
 
 # ═══════════════════════════════════════════════════════
-#  PDF
+#  PDF EXTRACTION (robust)
 # ═══════════════════════════════════════════════════════
 
 def extract_pdf(pdf_bytes):
+    """Extract text from PDF with multiple fallback methods."""
     try:
         doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-        txt = ""
-        for p in doc:
-            t = p.get_text()
-            if t:
-                txt += t + "\n"
+        text = ""
+
+        for page_num in range(len(doc)):
+            page = doc[page_num]
+
+            # Method 1: Standard text extraction
+            page_text = page.get_text("text")
+
+            # Method 2: If empty, try different extraction
+            if not page_text or len(page_text.strip()) < 10:
+                page_text = page.get_text("blocks")
+                if isinstance(page_text, list):
+                    page_text = "\n".join(
+                        block[4] for block in page_text
+                        if isinstance(block, tuple) and len(block) > 4 and isinstance(block[4], str)
+                    )
+
+            if isinstance(page_text, str) and page_text.strip():
+                text += page_text + "\n\n"
+
         doc.close()
-        return txt.strip()
+
+        # Clean up
+        text = re.sub(r'\n{3,}', '\n\n', text)
+        text = text.strip()
+
+        if len(text) < 50:
+            return ""
+
+        return text
+
     except Exception as e:
-        st.error(f"❌ {e}")
+        st.error(f"❌ Could not read this PDF: {e}")
         return ""
 
 
 def split_chapters(text):
+    """Split text into chapters with smart detection."""
     if not text or len(text) < 100:
-        return ["Too short."]
+        return ["Text too short to process."]
 
-    pat = r'(?=(?:^|\n)\s*(?:CHAPTER|Chapter|chapter)\s+[\dIVXLCDM]+)'
-    parts = [p.strip() for p in re.split(pat, text) if p.strip() and len(p.strip()) > 100]
-    if len(parts) >= 2:
-        return parts
+    # Strategy 1: Chapter markers
+    for pattern in [
+        r'(?=\n\s*(?:CHAPTER|Chapter)\s+[\dIVXLCDM]+)',
+        r'(?=\n\s*(?:PART|Part)\s+[\dIVXLCDM]+)',
+        r'(?=\n\s*\d+\.\s+[A-Z])',
+    ]:
+        parts = re.split(pattern, text)
+        parts = [p.strip() for p in parts if p.strip() and len(p.strip()) > 200]
+        if len(parts) >= 2:
+            return parts[:50]  # Max 50 chapters
 
-    paras = re.split(r'\n\s*\n\s*\n', text)
-    if len(paras) >= 3:
-        chunks, cur = [], ""
+    # Strategy 2: Natural paragraph breaks
+    paras = re.split(r'\n\s*\n', text)
+    if len(paras) >= 4:
+        chunks = []
+        current = ""
         for p in paras:
-            if len(cur) + len(p) > 3000 and cur:
-                chunks.append(cur.strip())
-                cur = p
+            p = p.strip()
+            if not p:
+                continue
+            if len(current) + len(p) > 2500 and len(current) > 500:
+                chunks.append(current.strip())
+                current = p
             else:
-                cur += "\n\n" + p
-        if cur.strip():
-            chunks.append(cur.strip())
+                current += "\n\n" + p
+        if current.strip() and len(current.strip()) > 100:
+            chunks.append(current.strip())
         if len(chunks) >= 2:
-            return chunks
+            return chunks[:50]
 
-    return [
-        text[i:i + 2500].strip()
-        for i in range(0, len(text), 2500)
-        if len(text[i:i + 2500].strip()) > 50
-    ] or [text[:3000]]
+    # Strategy 3: Sentence-aware fixed chunks
+    sentences = re.split(r'(?<=[.!?])\s+', text)
+    chunks = []
+    current = ""
+    for s in sentences:
+        if len(current) + len(s) > 2500 and len(current) > 500:
+            chunks.append(current.strip())
+            current = s
+        else:
+            current += " " + s
+    if current.strip() and len(current.strip()) > 100:
+        chunks.append(current.strip())
+
+    return chunks[:50] if chunks else [text[:3000]]
 
 
 # ═══════════════════════════════════════════════════════
-#  AI
+#  AI FUNCTIONS
 # ═══════════════════════════════════════════════════════
 
 def make_chain(chapter_text):
     if not client:
-        return [{"idea": "No AI.", "visual": "abstract", "mood": "calm"}]
+        return [{"idea": "No AI connected.", "visual": "abstract", "mood": "calm"}]
 
     ai_lang = t("ai")
 
@@ -421,33 +349,37 @@ def make_chain(chapter_text):
                     "content": f"""You create IDEA CHAINS for people with ADHD.
 
 CRITICAL RULES:
-- Each idea is MAX 10-15 WORDS. Like a billboard. Like a meme caption.
-- NO long sentences. NO filler words.
-- Ideas connect logically: cause→effect, question→answer
-- Generate 4-6 ideas
-- visual: 2-3 English words describing a photo scene
+- Each idea: MAX 10-15 WORDS total. Like a billboard.
+- NO long sentences. NO filler words. NO "the author says" or "this chapter discusses"
+- Just raw insight. Punchy. Bold.
+- Ideas connect: cause→effect or question→answer
+- Generate exactly 5 ideas
+- visual: 2-3 English words for a photo (landscape, nature, abstract — NO text, NO people faces)
 - mood: one of: dark, epic, calm, mysterious, hopeful, intense, melancholic
 - {ai_lang}
 
-Return ONLY JSON array:
-[{{"idea":"short punchy text","visual":"keywords","mood":"calm"}}]
+Return ONLY a JSON array. No markdown. No explanation.
+[{{"idea":"short text","visual":"photo keywords","mood":"calm"}}]
 
-EXAMPLES of good ideas (notice how short):
-- "We fear what we don't understand."
-- "Power corrupts. Absolute power? Even faster."
+GOOD examples:
+- "Fear keeps us in cages we built ourselves."
+- "Power doesn't corrupt. It reveals."
 - "The cave was comfortable. Truth wasn't."
-"""
+- "Every empire falls. The pattern never breaks."
+BAD examples (too long):
+- "The author discusses how fear is a mechanism that keeps people trapped" ← NO
+- "In this chapter we learn about the nature of power" ← NO"""
                 },
-                {"role": "user", "content": f"Create idea chain:\n\n{chapter_text[:3000]}"}
+                {"role": "user", "content": f"Create an idea chain from this text:\n\n{chapter_text[:3000]}"}
             ],
             model=AI_MODEL,
             temperature=0.7,
-            max_tokens=1500,
+            max_tokens=1200,
         )
         return parse_json(r.choices[0].message.content.strip())
     except Exception as e:
-        st.warning(f"⚠️ {e}")
-        return [{"idea": "Error.", "visual": "abstract", "mood": "calm"}]
+        st.warning(f"⚠️ AI error: {e}")
+        return [{"idea": "Could not generate. Refresh the page.", "visual": "abstract", "mood": "calm"}]
 
 
 def make_title(chapter_text):
@@ -458,32 +390,45 @@ def make_title(chapter_text):
         r = client.chat.completions.create(
             messages=[{
                 "role": "user",
-                "content": f"Give this a poetic title (2-4 words). {ai_lang} Return ONLY the title:\n\n{chapter_text[:1500]}"
+                "content": (
+                    f"Create a poetic title (2-4 words) for this text. "
+                    f"{ai_lang} Return ONLY the title, nothing else:\n\n"
+                    f"{chapter_text[:1500]}"
+                )
             }],
             model=AI_MODEL,
             temperature=0.9,
             max_tokens=20,
         )
-        return r.choices[0].message.content.strip().strip('"\'')[:50]
+        return r.choices[0].message.content.strip().strip('"\'').strip()[:50]
     except Exception:
         return "..."
 
 
 def parse_json(raw):
+    # Clean markdown
     cleaned = re.sub(r'```json\s*', '', raw)
     cleaned = re.sub(r'```\s*', '', cleaned).strip()
 
-    for fn in [
-        lambda: json.loads(cleaned),
-        lambda: json.loads(re.search(r'\[.*\]', cleaned, re.DOTALL).group()),
-    ]:
+    # Try 1: Direct
+    try:
+        result = json.loads(cleaned)
+        if isinstance(result, list):
+            return validate(result)
+    except json.JSONDecodeError:
+        pass
+
+    # Try 2: Find array
+    match = re.search(r'\[.*\]', cleaned, re.DOTALL)
+    if match:
         try:
-            r = fn()
-            if isinstance(r, list):
-                return validate(r)
-        except (json.JSONDecodeError, AttributeError):
+            result = json.loads(match.group())
+            if isinstance(result, list):
+                return validate(result)
+        except json.JSONDecodeError:
             pass
 
+    # Try 3: Individual objects
     objs = []
     for o in re.findall(r'\{[^{}]+\}', cleaned):
         try:
@@ -518,35 +463,45 @@ def validate(chain):
 # ═══════════════════════════════════════════════════════
 
 BOOKS = {
-    "📜 Art of War": "https://www.gutenberg.org/cache/epub/132/pg132.txt",
-    "🏛️ Meditations": "https://www.gutenberg.org/cache/epub/2680/pg2680.txt",
-    "🧠 Beyond Good & Evil": "https://www.gutenberg.org/cache/epub/4363/pg4363.txt",
-    "👑 The Prince": "https://www.gutenberg.org/cache/epub/1232/pg1232.txt",
-    "📖 Frankenstein": "https://www.gutenberg.org/cache/epub/84/pg84.txt",
-    "🕳️ The Republic": "https://www.gutenberg.org/cache/epub/1497/pg1497.txt",
+    "📜 Art of War — Sun Tzu": "https://www.gutenberg.org/cache/epub/132/pg132.txt",
+    "🏛️ Meditations — Marcus Aurelius": "https://www.gutenberg.org/cache/epub/2680/pg2680.txt",
+    "🧠 Beyond Good & Evil — Nietzsche": "https://www.gutenberg.org/cache/epub/4363/pg4363.txt",
+    "👑 The Prince — Machiavelli": "https://www.gutenberg.org/cache/epub/1232/pg1232.txt",
+    "📖 Frankenstein — Shelley": "https://www.gutenberg.org/cache/epub/84/pg84.txt",
+    "🕳️ The Republic — Plato": "https://www.gutenberg.org/cache/epub/1497/pg1497.txt",
 }
 
 
 def download_book(url):
     try:
-        r = requests.get(url, timeout=15)
+        r = requests.get(url, timeout=20)
         r.raise_for_status()
         text = r.text
-        for m in ["*** START OF", "***START OF"]:
-            i = text.find(m)
-            if i != -1:
-                nl = text.find('\n', i)
+
+        # Remove Gutenberg header
+        for marker in ["*** START OF THE PROJECT", "*** START OF THIS", "***START OF"]:
+            idx = text.find(marker)
+            if idx != -1:
+                nl = text.find('\n', idx)
                 if nl != -1:
                     text = text[nl + 1:]
                 break
-        for m in ["*** END OF", "***END OF", "End of the Project Gutenberg"]:
-            i = text.find(m)
-            if i != -1:
-                text = text[:i]
+
+        # Remove Gutenberg footer
+        for marker in ["*** END OF THE PROJECT", "*** END OF THIS", "***END OF", "End of the Project Gutenberg", "End of Project Gutenberg"]:
+            idx = text.find(marker)
+            if idx != -1:
+                text = text[:idx]
                 break
-        return text.strip()
+
+        text = text.strip()
+        if len(text) < 100:
+            st.error("Downloaded text is too short.")
+            return ""
+        return text
+
     except Exception as e:
-        st.error(f"❌ {e}")
+        st.error(f"❌ Download failed: {e}")
         return ""
 
 
@@ -555,13 +510,16 @@ def download_book(url):
 # ═══════════════════════════════════════════════════════
 
 def main():
-    # Init
-    if "lang" not in st.session_state:
-        st.session_state["lang"] = "EN"
-    if "chains" not in st.session_state:
-        st.session_state["chains"] = {}
-    if "current_chapter" not in st.session_state:
-        st.session_state["current_chapter"] = 0
+    # ── SAFE INIT ──
+    defaults = {
+        "lang": "EN",
+        "chains": {},
+        "current_chapter": 0,
+        "music_on": False,
+    }
+    for k, v in defaults.items():
+        if k not in st.session_state:
+            st.session_state[k] = v
 
     # ── HEADER ──
     st.markdown(
@@ -571,64 +529,80 @@ def main():
     )
     st.markdown(
         f"<p style='text-align:center;color:#444;font-size:0.85em;"
-        f"margin:4px 0 15px;'>{t('sub')}</p>",
+        f"margin:4px 0 12px;'>{t('sub')}</p>",
         unsafe_allow_html=True,
     )
 
-    # ── LANGUAGE SELECTOR ──
+    # ── LANGUAGE ──
     lang_cols = st.columns(4)
-    for i, (code, flag) in enumerate([("EN", "🇬🇧"), ("DE", "🇩🇪"), ("UA", "🇺🇦"), ("FR", "🇫🇷")]):
+    lang_options = [("EN", "🇬🇧"), ("DE", "🇩🇪"), ("UA", "🇺🇦"), ("FR", "🇫🇷")]
+    for i, (code, flag) in enumerate(lang_options):
         with lang_cols[i]:
-            current = st.session_state["lang"]
-            label = f"✓ {flag}" if code == current else flag
-            if st.button(label, key=f"l_{code}", use_container_width=True):
-                if code != current:
+            current_lang = st.session_state["lang"]
+            label = f"✓ {flag}" if code == current_lang else flag
+            if st.button(label, key=f"lang_{code}", use_container_width=True):
+                if code != current_lang:
                     st.session_state["lang"] = code
                     st.session_state["chains"] = {}
                     st.rerun()
 
+    st.markdown("---")
+
     # ── SOURCE ──
     tab1, tab2 = st.tabs([t("upload"), t("classics")])
-    book_text = None
+    book_ready = False
 
     with tab1:
-        up = st.file_uploader("pdf", type=["pdf"], label_visibility="collapsed")
-        if up:
-            if "pdf_bytes" not in st.session_state:
-                st.session_state["pdf_bytes"] = up.read()
-            book_text = "__PDF__"
+        uploaded = st.file_uploader("Upload", type=["pdf"], label_visibility="collapsed")
+        if uploaded:
+            # Only read once
+            file_id = f"{uploaded.name}_{uploaded.size}"
+            if st.session_state.get("file_id") != file_id:
+                st.session_state["pdf_bytes"] = uploaded.read()
+                st.session_state["file_id"] = file_id
+                # Clear old data
+                for k in ["chapters", "chains", "current_chapter", "raw_text"]:
+                    if k in st.session_state:
+                        del st.session_state[k]
+                st.session_state["chains"] = {}
+                st.session_state["current_chapter"] = 0
+            book_ready = True
 
     with tab2:
-        sel = st.selectbox("b", list(BOOKS.keys()), label_visibility="collapsed")
+        sel = st.selectbox("Pick", list(BOOKS.keys()), label_visibility="collapsed")
         if st.button(t("load"), use_container_width=True):
             with st.spinner(t("reading")):
                 txt = download_book(BOOKS[sel])
                 if txt:
                     st.session_state["raw_text"] = txt
-                    for k in ["chapters", "chains", "current_chapter", "pdf_bytes"]:
+                    for k in ["chapters", "chains", "current_chapter", "pdf_bytes", "file_id"]:
                         if k in st.session_state:
                             del st.session_state[k]
                     st.session_state["chains"] = {}
                     st.session_state["current_chapter"] = 0
+                    st.rerun()
 
         if "raw_text" in st.session_state:
-            book_text = "__GUT__"
+            book_ready = True
 
-    # ── PROCESS ──
-    if book_text and "chapters" not in st.session_state:
+    # ── PROCESS BOOK ──
+    if book_ready and "chapters" not in st.session_state:
         with st.spinner(t("reading")):
-            raw = (
-                extract_pdf(st.session_state["pdf_bytes"])
-                if book_text == "__PDF__"
-                else st.session_state["raw_text"]
-            )
-            if raw:
-                st.session_state["chapters"] = split_chapters(raw)
+            if "pdf_bytes" in st.session_state:
+                raw = extract_pdf(st.session_state["pdf_bytes"])
+            elif "raw_text" in st.session_state:
+                raw = st.session_state["raw_text"]
+            else:
+                raw = ""
+
+            if raw and len(raw) > 50:
+                chapters = split_chapters(raw)
+                st.session_state["chapters"] = chapters
                 st.session_state["current_chapter"] = 0
                 st.session_state["chains"] = {}
                 st.rerun()
             else:
-                st.error("Empty.")
+                st.error("❌ Could not extract text from this file. Try a different PDF.")
                 return
 
     # ── LANDING ──
@@ -642,17 +616,26 @@ def main():
         """, unsafe_allow_html=True)
         return
 
-    # ── DISPLAY ──
+    # ══════════════════════════════════════
+    #  DISPLAY CHAPTER
+    # ══════════════════════════════════════
+
     chapters = st.session_state["chapters"]
     total = len(chapters)
     cur = st.session_state["current_chapter"]
 
-    # Nav
+    # Clamp
+    if cur >= total:
+        cur = total - 1
+        st.session_state["current_chapter"] = cur
+
+    # ── NAVIGATION ──
     c1, c2, c3 = st.columns([1, 2, 1])
     with c1:
-        if cur > 0 and st.button("⬅️", use_container_width=True, key="prev"):
-            st.session_state["current_chapter"] -= 1
-            st.rerun()
+        if cur > 0:
+            if st.button("⬅️", key="btn_prev", use_container_width=True):
+                st.session_state["current_chapter"] = cur - 1
+                st.rerun()
     with c2:
         st.markdown(
             f"<p style='text-align:center;color:#555;margin-top:8px;'>"
@@ -660,25 +643,40 @@ def main():
             unsafe_allow_html=True,
         )
     with c3:
-        if cur < total - 1 and st.button("➡️", use_container_width=True, key="nxt"):
-            st.session_state["current_chapter"] += 1
-            st.rerun()
+        if cur < total - 1:
+            if st.button("➡️", key="btn_next", use_container_width=True):
+                st.session_state["current_chapter"] = cur + 1
+                st.rerun()
 
-    # Generate
+    # ── GENERATE CHAIN ──
     chains = st.session_state["chains"]
     if cur not in chains:
         with st.spinner(t("building")):
-            ch = chapters[cur]
-            title = make_title(ch)
-            chain = make_chain(ch)
+            ch_text = chapters[cur]
+            title = make_title(ch_text)
+            chain = make_chain(ch_text)
             chains[cur] = {"title": title, "chain": chain}
             st.session_state["chains"] = chains
 
     data = chains[cur]
+
+    # Chapter title
     st.markdown(f'<div class="ch-t">{data["title"]}</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="ch-s">{cur + 1} / {total}</div>', unsafe_allow_html=True)
 
-    # ── CARDS ──
+    # ── MUSIC (native Streamlit — no JS!) ──
+    if data["chain"]:
+        mood = data["chain"][0].get("mood", "calm")
+        music_url = MUSIC_URLS.get(mood, MUSIC_URLS["calm"])
+
+        with st.expander(f"🎵 {t('music')} — {mood.upper()}", expanded=False):
+            music_data = download_music(music_url)
+            if music_data:
+                st.audio(music_data, format="audio/ogg", loop=True)
+            else:
+                st.caption("Music unavailable. Try refreshing.")
+
+    # ── IDEA CARDS ──
     chain = data["chain"]
     for i, node in enumerate(chain):
         idea = node["idea"]
@@ -689,7 +687,7 @@ def main():
         st.markdown(f"""
             <div class="hero">
                 <img class="hero-bg" src="{img}" loading="lazy"
-                     onerror="this.src='https://picsum.photos/seed/fallback{i}/800/600'">
+                     onerror="this.src='https://picsum.photos/seed/fb{cur}{i}/800/600'">
                 <div class="hero-grad"></div>
                 <div class="hero-body">
                     <div class="hero-txt">{idea}</div>
@@ -704,70 +702,30 @@ def main():
         if i < len(chain) - 1:
             st.markdown('<div class="conn">⟱</div>', unsafe_allow_html=True)
 
-    # ── END ──
+    # ── END OF CHAPTER ──
     st.markdown("---")
+
     if cur < total - 1:
-        if st.button(t("next_ch"), use_container_width=True, type="primary"):
-            st.session_state["current_chapter"] += 1
+        if st.button(t("next_ch"), use_container_width=True, type="primary", key="btn_next_ch"):
+            st.session_state["current_chapter"] = cur + 1
             st.rerun()
     else:
         st.markdown(f"""
-            <div style="text-align:center;padding:40px;">
+            <div style="text-align:center;padding:30px;">
                 <h2 style="color:#e94560;">{t('done')}</h2>
                 <p style="color:#555;">{t('done_sub')}</p>
             </div>
         """, unsafe_allow_html=True)
-        if st.button(t("reset"), use_container_width=True):
+
+        if st.button(t("reset"), use_container_width=True, key="btn_reset"):
             for k in list(st.session_state.keys()):
                 del st.session_state[k]
             st.rerun()
 
-    # ── MUSIC (floating circle + popup panel) ──
-    if chain:
-        mood = chain[0].get("mood", "calm")
-        trks = get_tracks(mood)
 
-        st.markdown(f"""
-            <audio id="bgm" loop preload="auto" volume="0.4">
-                <source src="{trks[0]}" type="audio/mpeg">
-            </audio>
-
-            <div class="music-panel" id="mPanel">
-                <div class="music-panel-title">
-                    🎵 Music
-                    <button class="music-panel-close" onclick="
-                        document.getElementById('mPanel').classList.remove('open');
-                    ">✕</button>
-                </div>
-                <button class="music-btn" onclick="
-                    var a=document.getElementById('bgm');
-                    if(a.paused){{a.play();this.innerHTML='⏸ Pause';}}
-                    else{{a.pause();this.innerHTML='▶ Play';}}
-                ">▶ Play</button>
-                <button class="music-btn" onclick="
-                    var a=document.getElementById('bgm');
-                    var srcs={json.dumps(trks)};
-                    var ci=srcs.indexOf(a.querySelector('source').src);
-                    var ni=(ci+1)%srcs.length;
-                    a.querySelector('source').src=srcs[ni];
-                    a.load(); a.play();
-                ">⏭ Next Track</button>
-                <div class="vol-row">
-                    <span>🔈</span>
-                    <input type="range" min="0" max="100" value="40"
-                        oninput="document.getElementById('bgm').volume=this.value/100">
-                    <span>🔊</span>
-                </div>
-            </div>
-
-            <button class="music-toggle" onclick="
-                var p=document.getElementById('mPanel');
-                p.classList.toggle('open');
-            ">🎵</button>
-        """, unsafe_allow_html=True)
-
-    st.markdown('<div class="spacer"></div>', unsafe_allow_html=True)
-
+# ═══════════════════════════════════════════════════════
+#  RUN
+# ═══════════════════════════════════════════════════════
 
 if __name__ == "__main__":
     main()
